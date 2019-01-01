@@ -4,10 +4,11 @@ from client import Client
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
 
-class RDFLoader(object):
+class RDFGraphLoader(object):
 	"""
 	A class for loading and processing RDF datasets for
 	relational learning models
+	It provides some convenience functions for accessing a knowldge graph from a sparql endpoint
 	"""
 
 	def __init__(self, sparql_endpoint, graph_name):
@@ -15,6 +16,9 @@ class RDFLoader(object):
 		self.graph = graph_name
 		self.endpoint = sparql_endpoint
 		self.client = Client(self.endpoint)
+		self.entity2idx = None
+		self.relation2idx = None
+		self.attribute2idx = None
 
 	def num_entities(self):
 		"""
@@ -61,29 +65,46 @@ class RDFLoader(object):
 		# TODO: convert the dataframe to integer
 		return result
 
-	def entities(self):
+	def entities(self, return_format='dict'):
+		"""
+		A function that returns the number of
+		:param return_format: the return format of the result. one of ['dict', 'df', 'list']
+		:return: the entities in the knowledge graph represented in the specified return format
+		"""
 		query_string = str(Entities(self.graph))
-		result = self.client.execute_query(query_string)
-		return result
+		result_df = self.client.execute_query(query_string)
+		if return_format == 'dict':
+			# TODO: set the index to the entities column
+			idx2entity_dict = result_df.set_index('').T.to_dict('list')
+			return idx2entity_dict
+		elif return_format == 'df':
+			return result_df
+		elif return_format == 'list':
+			# TODO: implement the list format
+			pass
 
-	def triples(self):
+	def triples(self, entity2idx=None):
 		query_string = str(Entities(self.graph))
 		result = self.client.execute_query(query_string)
+		# TODO: convert the triples of URIs to triples of indices
 		return result
 
 	def relations(self):
 		query_string = str(Relations(self.graph))
 		result = self.client.execute_query(query_string)
+		# TODO: convert the dataframe to an indexed dictionary
 		return result
 
 	def attributes(self):
 		query_string = str(Attributes(self.graph))
 		result = self.client.execute_query(query_string)
+		# TODO: convert the dataframe to an indexed dictionary
 		return result
 
 	def attr_literal_pairs(self):
 		query_string = str(AttributeLiteralPairs(self.graph))
 		result = self.client.execute_query(query_string)
+		# TODO: convert the dataframe to an indexed dictionary
 		return result
 
 	def subjects(self, p):
