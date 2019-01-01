@@ -88,7 +88,7 @@ class Attributes(SparqlQuery):
 	A class for the sparql query that returns the  attributes
 	"""
 	def __str__(self):
-		return 	'SELECT DISTINCT ?p FROM <h' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
+		return 'SELECT DISTINCT ?p FROM <h' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
 
 
 class AttributeLiteralPairs(SparqlQuery):
@@ -96,9 +96,42 @@ class AttributeLiteralPairs(SparqlQuery):
 	A class for the sparql query that returns the attr_literal_pairs
 	"""
 	def __str__(self):
-		return 	'SELECT DISTINCT ?p ?o FROM <' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
+		return 'SELECT DISTINCT ?p ?o FROM <' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
 
 
+class Subjects(SparqlQuery):
+	"""
+	A class for the sparql query that returns the subjects of a given predicate p.
+	It returns all the subjects ?s that match the following pattern
+		?s p ?o
+	"""
+	def __init__(self, graph, p):
+		super(SparqlQuery, self).__init__(graph)
+		self.p = p
+
+	def __str__(self):
+		return 'SELECT DISTINCT ?s FROM <' + self.graph + '> WHERE { ?s ' + self.p + ' ?o }'
 
 
+class Objects(SparqlQuery):
+	"""
+	A class for the sparql query that returns the objects of a given predicate p.
+	It returns all the objects ?o that match the following pattern
+		?s p ?o
+	"""
+	def __init__(self, graph, p):
+		super(SparqlQuery, self).__init__(graph)
+		self.p = p
 
+	def __str__(self):
+		return 'SELECT DISTINCT ?p FROM <' + self.graph + '> WHERE { ?s ' + self.p + ' ?o }'
+
+
+class PredicatesFreq(SparqlQuery):
+	"""
+	A class for the sparql query that returns the predicates of a given graph.
+	It returns all the predicates ?p that match the following pattern
+		?s p ?o
+	"""
+	def __str__(self):
+		return 'SELECT COUNT(DISTINCT *) FROM <' + self.graph + '> WHERE { ?s ?p ?o } GROUPBY ?p'
