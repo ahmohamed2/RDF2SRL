@@ -59,10 +59,11 @@ class Client(object):
         client = SPARQLWrapper(self.endpoint)
         offset = 0
         limit = 10000
-        results = ""
-        while :
+        results = " " # the result of one query
+        results_string = "" # where all the results are concatenated
+        while len(results) > 0:
             query_string = query+" OFFSET {} LIMIT {}".format(str(offset), str(limit))
-            client.setQuery(query)
+            client.setQuery(query_string)
             try:
                 client.setReturnFormat(CSV)
                 results = client.query().convert() # string
@@ -70,9 +71,9 @@ class Client(object):
             except Exception as e:
                 print(e)
                 sys.exit()
-            results += results.decode("utf-8")
+            results_string += results.decode("utf-8")
         
-        f = io.StringIO(results)
+        f = io.StringIO(results_string)
 
         # convert it to a dataframe
         f.seek(0)

@@ -7,7 +7,7 @@ from client import Client
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
 
-class RDFGraphLoader(object):
+class RDFGraphDataset(object):
 	"""
 	A class for loading and processing RDF datasets for
 	relational learning models
@@ -23,6 +23,7 @@ class RDFGraphLoader(object):
 		self.predicate2idx = None
 		self.relation2idx = None
 		self.attribute2idx = None
+		self.attribute_literal_pair2idx = None
 
 	def num_entities(self):
 		"""
@@ -104,11 +105,23 @@ class RDFGraphLoader(object):
 		"""
 		query_string = str(Entities(self.graph))
 		result_df = self.client.execute_query(query_string)
+		# set the column name to "entity"
+		result_df.columns = ['entity']
+		# create a new column for the index
+		result_df.reset_index(level=0, inplace=True)
+		entity2idx = Series(result_df['index'].values, index=result_df['entity'].values).to_dict()
+
+		if return_format == 'dict':
+			return entity2idx
+		elif return_format == 'df':
+			return result_df
+		elif return_format == 'list':
+			return list(itertools.chain(*result_df.values))
 
 	def predicates(self, return_format='dict'):
 		query_string = str(Predicates(self.graph))
 		result_df = self.client.execute_query(query_string)
-		# set the column name to "relation"
+		# set the column name to "predicate"
 		result_df.columns = ['predicate']
 		# create a new column for the index
 		result_df.reset_index(level=0, inplace=True)
@@ -152,7 +165,7 @@ class RDFGraphLoader(object):
 		"""
 		query_string = str(Attributes(self.graph))
 		result_df = self.client.execute_query(query_string)
-		# set the column name to "relation"
+		# set the column name to "attribute"
 		result_df.columns = ['attribute']
 		# create a new column for the index
 		result_df.reset_index(level=0, inplace=True)
@@ -174,35 +187,111 @@ class RDFGraphLoader(object):
 		"""
 		query_string = str(AttributeLiteralPairs(self.graph))
 		result = self.client.execute_query(query_string)
+		# set the column name to "attribute_literal_pair"
+		result_df.columns = ['attribute_literal_pair']
+		# create a new column for the index
+		result_df.reset_index(level=0, inplace=True)
+		attribute_literal_pair2idx = Series(result_df['index'].values, index=result_df['attribute_literal_pair'].values).to_dict()
+		self.attribute_literal_pair2idx = attribute_literal_pair2idx
+
 		if return_format == 'dict':
-			# set the column name to "relation"
-			result_df.columns = ['attr_literal_pair']
-			# create a new column for the index
-			result_df.reset_index(level=0, inplace=True)
-			attr_literal_pair2idx = Series(result_df['index'].values, index=result_df['attr_literal_pair'].values).to_dict()
-			return attr_literal_pair2idx
+			return attribute_literal_pair2idx
 		elif return_format == 'df':
 			return result_df
 		elif return_format == 'list':
 			return list(itertools.chain(*result_df.values))
 
-	def triples(self, entity2idx=None):
+	def triples(self, entity2idx=None, predicate2idx=None, return_format='list'):
 		query_string = str(Entities(self.graph))
-		result = self.client.execute_query(query_string)
-		# TODO: convert the triples of URIs to triples of indices
-		return result
+		result_df = self.client.execute_query(query_string)
 
-	def entity2entity_triples(self, entity2idx=None):
-		query_string = str(Entities(self.graph))
-		result = self.client.execute_query(query_string)
-		# TODO: convert the triples of URIs to triples of indices
-		return result
+        # find the dictionary mapping each entitt to its index
+		if entity2idx is None:
+			if self.entity2idx is None:
+				entity2idx = self.entities('dict')
+			else:
+				entity2idx = self.entity2idx
 
-	def entity2literal_triples(self, entity2idx=None):
-		query_string = str(Entities(self.graph))
+        # find the dictionary mapping each predicate to its index
+		if predicate2idx is None:
+			if self.predicate2idx is None:
+				predicate2idx = self.predicates('dict')
+			else:
+				predicate2idx = self.predicate2idx
+
+		# rearrange columns to be subject, object, predicate
+		result_df.columns = ['subject', 'predicate', 'object']
+		result_df = result_df[['subject', 'object', 'predicate']]
+		# map the subjects to their indecies
+		result_df = result_df.replace({'subject': entity2idx})
+		result_df = result_df.replace({'object': entity2idx})
+		result_df = result_df.replace({'predicate': predicate2idx})
+
+		if return_format == 'list':
+			return result_df.values.tolist()
+		elif return_format == 'df':
+			return result_df
+
+
+	def entity2entity_triples(self, entity2idx=None, relation2idx=None, return_format='list'):
+		query_string = str(E2ETriples(self.graph))
 		result = self.client.execute_query(query_string)
-		# TODO: convert the triples of URIs to triples of indices
-		return result
+        # find the dictionary mapping each entitt to its index
+		if entity2idx is None:
+			if self.entity2idx is None:
+				entity2idx = self.entities('dict')
+			else:
+				entity2idx = self.entity2idx
+
+        # find the dictionary mapping each relation to its index
+		if relation2idx is None:
+			if self.relation2idx is None:
+				relation2idx = self.relations('dict')
+			else:
+				relation2idx = self.relation2idx
+
+		# rearrange columns to be subject, object, relation
+		result_df.columns = ['subject', 'predicate', 'object']
+		result_df = result_df[['subject', 'object', 'predicate']]
+		# map the subjects to their indecies
+		result_df = result_df.replace({'subject': entity2idx})
+		result_df = result_df.replace({'object': entity2idx})
+		result_df = result_df.replace({'predicate': relation2idx})
+
+		if return_format == 'list':
+			return result_df.values.tolist()
+		elif return_format == 'df':
+			return result_df
+
+	def entity2literal_triples(self, entity2idx=None, attribute_literal_pair2idx=None, return_format='list'):
+		query_string = str(E2LTriples(self.graph))
+		result = self.client.execute_query(query_string)
+        # find the dictionary mapping each entitt to its index
+		if entity2idx is None:
+			if self.entity2idx is None:
+				entity2idx = self.entities('dict')
+			else:
+				entity2idx = self.entity2idx
+
+        # find the dictionary mapping each predicate to its index
+		if attribute_literal_pair2idx is None:
+			if self.attribute_literal_pair2idx is None:
+				attribute_literal_pair2idx = self.attribute_literal_pair2idx('dict')
+			else:
+				attribute_literal_pair2idx = self.attribute_literal_pair2idx
+
+		# rearrange columns to be subject, object, predicate
+		result_df.columns = ['subject', 'predicate', 'object']
+		result_df = result_df[['subject', 'object', 'predicate']]
+		# map the subjects to their indecies
+		result_df = result_df.replace({'subject': entity2idx})
+		result_df = result_df.replace({'object': entity2idx})
+		result_df = result_df.replace({'predicate': attribute_literal_pair2idx})
+
+		if return_format == 'list':
+			return result_df.values.tolist()
+		elif return_format == 'df':
+			return result_df
 
 
 	def subjects(self, p, entity2idx=None):
