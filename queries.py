@@ -22,6 +22,24 @@ class NTriples(SparqlQuery):
 		return 'SELECT count(*) FROM <' + self.graph + '> WHERE { ?s ?p ?o}'
 
 
+class NE2ETriples(SparqlQuery):
+	"""
+	A class for the sparql query that returns the number of triples
+	"""
+
+	def __str__(self):
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(*) FROM <' + self.graph + \
+		'> WHERE { ?s ?p ?o . { SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
+
+class NE2LTriples(SparqlQuery):
+	"""
+	A class for the sparql query that returns the number of triples
+	"""
+
+	def __str__(self):
+		return 'SELECT count(*) FROM <' + self.graph + '> WHERE { ?s ?p ?o . {SELECT DISTINCT ?p FROM <' + \
+		self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}}'
+
 class NEntities(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of entities
@@ -30,6 +48,10 @@ class NEntities(SparqlQuery):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?s) FROM <' \
 				+ self.graph + '> WHERE {?s rdf:type ?c}'
 
+
+class NPredicates(SparqlQuery):
+	def __str__(self):
+		return 'SELECT COUNT(DISTINCT ?p) FROM <' + self.graph + '> WHERE { ?s ?p ?o }'
 
 class NRelations(SparqlQuery):
 	"""
@@ -88,7 +110,15 @@ class Attributes(SparqlQuery):
 	A class for the sparql query that returns the  attributes
 	"""
 	def __str__(self):
-		return 'SELECT DISTINCT ?p FROM <h' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
+		return 'SELECT DISTINCT ?p FROM <' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
+
+
+class Predicates(SparqlQuery):
+	"""
+	A class for the sparql query that returns the predicates
+	"""
+	def __str__(self):
+		return 'SELECT DISTINCT ?p FROM <' + self.graph + '> WHERE { ?s ?p ?o }'
 
 
 class AttributeLiteralPairs(SparqlQuery):

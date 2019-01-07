@@ -56,10 +56,6 @@ class Client(object):
         :type output_file: string
         :return: a pandas dataframe representing the result of the query
         """
-        #TODO: Allow for the execution of multiple queries if needed
-        #TODO: Add the other return formats
-        #TODO: check the query and find out if its valid
-        #TODO: check if the connection is successful
         client = SPARQLWrapper(self.endpoint)
         client.setQuery(query)
         try:
