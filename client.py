@@ -57,15 +57,21 @@ class Client(object):
         :return: a pandas dataframe representing the result of the query
         """
         client = SPARQLWrapper(self.endpoint)
-        client.setQuery(query)
-        try:
-            client.setReturnFormat(CSV)
-            results = client.query().convert() # string
-        except Exception as e:
-            print(e)
-            sys.exit()
-
-        results = results.decode("utf-8")
+        offset = 0
+        limit = 10000
+        results = ""
+        while :
+            query_string = query+" OFFSET {} LIMIT {}".format(str(offset), str(limit))
+            client.setQuery(query)
+            try:
+                client.setReturnFormat(CSV)
+                results = client.query().convert() # string
+                offset = offset + limit
+            except Exception as e:
+                print(e)
+                sys.exit()
+            results += results.decode("utf-8")
+        
         f = io.StringIO(results)
 
         # convert it to a dataframe
