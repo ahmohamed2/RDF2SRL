@@ -6,6 +6,8 @@ import pandas as pd
 
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
+_MAX_ROWS = 10000 # maximin rows returned in the result set
+_TIMEOUT = 600 # in seconds
 
 class Client(object):
     """
@@ -43,7 +45,7 @@ class Client(object):
         """
         self.endpoint = endpoint
 
-    def execute_query(self, query, output_file=None):
+    def execute_query(self, query, limit=_MAX_ROWS,output_file=None):
         """
         Connects to the sparql endpoint, sends the query and returns a dataframe containing the result of a sparql query
         :param query: a valid sparql query string
@@ -53,22 +55,27 @@ class Client(object):
         :return: a pandas dataframe representing the result of the query
         """
         client = SPARQLWrapper(self.endpoint)
+        client.setTimeout(_TIMEOUT) # set the timeout to 60000 msec
         offset = 0
-        limit = 10000
-        results = " " # the result of one query
-        results_string = "" # where all the results are concatenated
-        while len(results) > 0:
-            query_string = query+" OFFSET {} LIMIT {}".format(str(offset), str(limit))
+        results_string = "callret-0\n" # where all the results are concatenated
+        continue_straming = True
+        while continue_straming:
+            if limit > 1:
+                query_string = query+" OFFSET {} LIMIT {}".format(str(offset), str(limit))
+            else:
+                query_string = query
             client.setQuery(query_string)
             try:
                 client.setReturnFormat(CSV)
-                results = client.query().convert() # string
+                results = client.query().convert()[len("callret-0\n")+2:] # string
+                # if the number of rows is less then the maximum number of rows
+                if len(results) < _MAX_ROWS:
+                    continue_straming = False
                 offset = offset + limit
             except Exception as e:
                 print(e)
                 sys.exit()
             results_string += results.decode("utf-8")
-
         # convert it to a dataframe
         f = io.StringIO(results_string)
         f.seek(0)
