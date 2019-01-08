@@ -15,7 +15,7 @@ class RDFGraphDataset(object):
 	"""
 
 	def __init__(self, sparql_endpoint, graph_name):
-		super(RDFGraphLoader, self).__init__()
+		super(RDFGraphDataset, self).__init__()
 		self.graph = graph_name
 		self.endpoint = sparql_endpoint
 		self.client = Client(self.endpoint)

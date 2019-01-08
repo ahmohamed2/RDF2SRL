@@ -2,14 +2,21 @@ import sys
 sys.path.append('/home/amohamed/RDF2SRL/')
 from rdfloader import RDFGraphDataset
 
-loader = RDFGraphLoader(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
+loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
 
 n_e = loader.num_entities()
+print("n_e = {}".format(n_e))
 n_p = loader.num_predicates()
+print("n_p = {}".format(n_p))
 n_r = loader.num_relations()
+print("n_r = {}".format(n_r))
 n_a = loader.num_attributes()
+print("n_a = {}".format(n_a))
 n_al = loader.num_attr_literal_pairs()
+print("n_al = {}".format(n_al))
 m = loader.num_triples() # 49223643
+print("m = {}".format(m))
+
 print("n_e = {}  n_p = {}  n_r = {}  n_a = {}  n_al = {}  m = {}".format(n_e, n_p, n_r, n_a, n_al, m))
 e2l_m = loader.num_entity2literal_triples()
 e2e_m = loader.num_entity2entity_triples()
