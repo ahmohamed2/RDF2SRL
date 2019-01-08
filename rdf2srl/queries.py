@@ -8,7 +8,7 @@ class SparqlQuery(object):
 	def __init__(self, graph=None):
 		super(SparqlQuery, self).__init__()
 		if graph is not None:
-			self.graph = ' FROM <'+graph+'> '
+			self.graph = ' FROM <'+ graph +'> '
 		else:
 			self.graph = ' '
 
@@ -31,8 +31,8 @@ class NE2ETriples(SparqlQuery):
 	"""
 
 	def __str__(self):
-		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(*) FROM <' + self.graph + \
-			'> WHERE {?s ?p ?o {SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(*)' + self.graph + \
+			'WHERE {?s ?p ?o {SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
 
 
 class NE2LTriples(SparqlQuery):
@@ -41,21 +41,21 @@ class NE2LTriples(SparqlQuery):
 	"""
 
 	def __str__(self):
-		return 'SELECT count(*) FROM <' + self.graph + '> WHERE { ?s ?p ?o . {SELECT DISTINCT ?p FROM <' + \
-			self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}}'
+		return 'SELECT count(*)' + self.graph + 'WHERE { ?s ?p ?o . {SELECT DISTINCT ?p' + \
+			self.graph + 'WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}}'
 
 class NEntities(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of entities
 	"""
 	def __str__(self):
-		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?s) FROM <' \
-			+ self.graph + '> WHERE {?s rdf:type ?c}'
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?s)' \
+			+ self.graph + 'WHERE {?s rdf:type ?c}'
 
 
 class NPredicates(SparqlQuery):
 	def __str__(self):
-		return 'SELECT COUNT(DISTINCT ?p) FROM <' + self.graph + '> WHERE { ?s ?p ?o }'
+		return 'SELECT COUNT(DISTINCT ?p)' + self.graph + 'WHERE { ?s ?p ?o }'
 
 
 class NRelations(SparqlQuery):
@@ -63,8 +63,8 @@ class NRelations(SparqlQuery):
 	A class for the sparql query that returns the number of relations
 	"""
 	def __str__(self):
-		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?p) FROM <' + \
-			self.graph + '> WHERE { ?s ?p ?o . ?o rdf:type ?c}'
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?p)' + \
+			self.graph + 'WHERE { ?s ?p ?o . ?o rdf:type ?c}'
 
 
 class NAttributes(SparqlQuery):
@@ -72,7 +72,7 @@ class NAttributes(SparqlQuery):
 	A class for the sparql query that returns the number of attributes
 	"""
 	def __str__(self):
-		return 'SELECT count(DISTINCT ?p) FROM <' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
+		return 'SELECT count(DISTINCT ?p)' + self.graph + 'WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
 
 
 class NAttributeLiteralPairs(SparqlQuery):
@@ -80,8 +80,8 @@ class NAttributeLiteralPairs(SparqlQuery):
 	A class for the sparql query that returns the number of attr_literal_pairs
 	"""
 	def __str__(self):
-		return 'SELECT COUNT (*) WHERE {SELECT DISTINCT ?p ?o FROM <' + self.graph + \
-			'> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}'
+		return 'SELECT COUNT (*) WHERE {SELECT DISTINCT ?p ?o' + self.graph + \
+			'WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}'
 
 
 class Triples(SparqlQuery):
@@ -89,7 +89,7 @@ class Triples(SparqlQuery):
 	A class for the sparql query that returns the triples
 	"""
 	def __str__(self):
-		return 'SELECT count(*) FROM <' + self.graph + '> WHERE { ?s ?p ?o}'
+		return 'SELECT count(*)' + self.graph + 'WHERE { ?s ?p ?o}'
 
 
 class E2ETriples(SparqlQuery):
@@ -98,8 +98,8 @@ class E2ETriples(SparqlQuery):
 	"""
 
 	def __str__(self):
-		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * FROM <' + self.graph + \
-			'> WHERE {?s ?p ?o {SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT *' + self.graph + \
+			'WHERE {?s ?p ?o {SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
 
 
 class E2LTriples(SparqlQuery):
@@ -108,7 +108,7 @@ class E2LTriples(SparqlQuery):
 	"""
 
 	def __str__(self):
-		return 'SELECT * FROM <' + self.graph + '> WHERE { ?s ?p ?o . {SELECT DISTINCT ?p' + \
+		return 'SELECT *' + self.graph + 'WHERE { ?s ?p ?o . {SELECT DISTINCT ?p' + \
 			'WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}}'
 
 
@@ -117,8 +117,8 @@ class Entities(SparqlQuery):
 	A class for the sparql query that returns the entities
 	"""
 	def __str__(self):
-		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?s FROM <' + \
-			self.graph + '> WHERE {?s rdf:type ?c}'
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?s' + \
+			self.graph + 'WHERE {?s rdf:type ?c}'
 
 
 class Relations(SparqlQuery):
@@ -126,8 +126,8 @@ class Relations(SparqlQuery):
 	A class for the sparql query that returns the entity to entiity relations
 	"""
 	def __str__(self):
-		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?p FROM <' + \
-			self.graph + '> WHERE { ?s ?p ?o . ?o rdf:type ?c}'
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?p' + \
+			self.graph + 'WHERE { ?s ?p ?o . ?o rdf:type ?c}'
 
 
 class Attributes(SparqlQuery):
@@ -135,7 +135,7 @@ class Attributes(SparqlQuery):
 	A class for the sparql query that returns the  attributes
 	"""
 	def __str__(self):
-		return 'SELECT DISTINCT ?p FROM <' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
+		return 'SELECT DISTINCT ?p' + self.graph + 'WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
 
 
 class Predicates(SparqlQuery):
@@ -143,7 +143,7 @@ class Predicates(SparqlQuery):
 	A class for the sparql query that returns the predicates
 	"""
 	def __str__(self):
-		return 'SELECT DISTINCT ?p FROM <' + self.graph + '> WHERE { ?s ?p ?o }'
+		return 'SELECT DISTINCT ?p' + self.graph + 'WHERE { ?s ?p ?o }'
 
 
 class AttributeLiteralPairs(SparqlQuery):
@@ -151,7 +151,7 @@ class AttributeLiteralPairs(SparqlQuery):
 	A class for the sparql query that returns the attr_literal_pairs
 	"""
 	def __str__(self):
-		return 'SELECT DISTINCT ?p ?o FROM <' + self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
+		return 'SELECT DISTINCT ?p ?o' + self.graph + 'WHERE { ?s ?p ?o . FILTER isLiteral(?o)}'
 
 
 class Subjects(SparqlQuery):
@@ -165,7 +165,7 @@ class Subjects(SparqlQuery):
 		self.p = p
 
 	def __str__(self):
-		return 'SELECT DISTINCT ?s FROM <' + self.graph + '> WHERE { ?s ' + self.p + ' ?o }'
+		return 'SELECT DISTINCT ?s' + self.graph + 'WHERE { ?s ' + self.p + ' ?o }'
 
 
 class Objects(SparqlQuery):
@@ -179,7 +179,7 @@ class Objects(SparqlQuery):
 		self.p = p
 
 	def __str__(self):
-		return 'SELECT DISTINCT ?p FROM <' + self.graph + '> WHERE { ?s ' + self.p + ' ?o }'
+		return 'SELECT DISTINCT ?p' + self.graph + 'WHERE { ?s ' + self.p + ' ?o }'
 
 
 class PredicatesFreq(SparqlQuery):
@@ -189,4 +189,4 @@ class PredicatesFreq(SparqlQuery):
 		?s p ?o
 	"""
 	def __str__(self):
-		return 'SELECT COUNT(DISTINCT *) FROM <' + self.graph + '> WHERE { ?s ?p ?o } GROUPBY ?p'
+		return 'SELECT COUNT(DISTINCT *)' + self.graph + 'WHERE { ?s ?p ?o } GROUPBY ?p'
