@@ -1,6 +1,4 @@
-import sys
-sys.path.append('/home/amohamed/RDF2SRL/')
-from rdfloader import RDFGraphDataset
+from rdf2srl import RDFGraphDataset
 
 loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
 

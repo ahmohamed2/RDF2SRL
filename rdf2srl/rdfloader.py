@@ -1,8 +1,8 @@
-from pandas import Series
 import itertools
+from pandas import Series
 
-from queries import *
-from client import Client
+from .queries import *
+from .client import Client
 
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
@@ -13,7 +13,7 @@ class RDFGraphDataset(object):
 	It provides some convenience functions for accessing a knowldge graph from a sparql endpoint
 	"""
 
-	def __init__(self, sparql_endpoint, graph_name):
+	def __init__(self, sparql_endpoint, graph_name=None):
 		"""
 		Initialize the RDFGraphDataset class.
 		Each graph has to create a new RDFGraphDataset dataset.

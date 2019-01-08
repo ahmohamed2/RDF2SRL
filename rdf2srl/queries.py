@@ -5,9 +5,12 @@ class SparqlQuery(object):
 	"""
 	A class for the sparql query
 	"""
-	def __init__(self, graph):
+	def __init__(self, graph=None):
 		super(SparqlQuery, self).__init__()
-		self.graph = graph
+		if graph is not None:
+			self.graph = ' FROM <'+graph+'> '
+		else:
+			self.graph = ' '
 
 	def __str__(self):
 		pass
@@ -19,7 +22,7 @@ class NTriples(SparqlQuery):
 	"""
 
 	def __str__(self):
-		return 'SELECT count(*) FROM <' + self.graph + '> WHERE { ?s ?p ?o}'
+		return 'SELECT count(*)' + self.graph + 'WHERE { ?s ?p ?o}'
 
 
 class NE2ETriples(SparqlQuery):
