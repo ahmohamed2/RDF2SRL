@@ -146,7 +146,7 @@ class RDFGraphDataset(object):
 		elif return_format == 'df':
 			return result_df
 		elif return_format == 'list':
-			return list(itertools.chain(*result_df.values))		
+			return list(itertools.chain(*result_df['predicate'].values))		
 
 	def relations(self, return_format='dict'):
 		"""
@@ -372,8 +372,16 @@ class RDFGraphDataset(object):
 		elif return_format == 'df':
 			return result_df
 
+	def predicates_freq(self):
+		"""
+		A function that returns all the predicates and their frequency
+		"""
+		query_string = str(PredicatesFreq(self.graph))
+		result_df = self.client.execute_query(query_string)
+		result_df.columns = ['predicate', 'freq']
 
-
+		if return_format == 'df':
+			return result_df
 
 
 
