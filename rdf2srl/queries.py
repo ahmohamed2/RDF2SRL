@@ -29,7 +29,7 @@ class NE2ETriples(SparqlQuery):
 
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(*) FROM <' + self.graph + \
-		'> WHERE {?s ?p ?o {SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
+			'> WHERE {?s ?p ?o {SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
 
 
 class NE2LTriples(SparqlQuery):
@@ -39,7 +39,7 @@ class NE2LTriples(SparqlQuery):
 
 	def __str__(self):
 		return 'SELECT count(*) FROM <' + self.graph + '> WHERE { ?s ?p ?o . {SELECT DISTINCT ?p FROM <' + \
-		self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}}'
+			self.graph + '> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}}'
 
 class NEntities(SparqlQuery):
 	"""
@@ -47,12 +47,13 @@ class NEntities(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?s) FROM <' \
-				+ self.graph + '> WHERE {?s rdf:type ?c}'
+			+ self.graph + '> WHERE {?s rdf:type ?c}'
 
 
 class NPredicates(SparqlQuery):
 	def __str__(self):
 		return 'SELECT COUNT(DISTINCT ?p) FROM <' + self.graph + '> WHERE { ?s ?p ?o }'
+
 
 class NRelations(SparqlQuery):
 	"""
@@ -60,7 +61,7 @@ class NRelations(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?p) FROM <' + \
-				self.graph + '> WHERE { ?s ?p ?o . ?o rdf:type ?c}'
+			self.graph + '> WHERE { ?s ?p ?o . ?o rdf:type ?c}'
 
 
 class NAttributes(SparqlQuery):
@@ -77,7 +78,7 @@ class NAttributeLiteralPairs(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'SELECT COUNT (*) WHERE {SELECT DISTINCT ?p ?o FROM <' + self.graph + \
-				'> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}'
+			'> WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}'
 
 
 class Triples(SparqlQuery):
@@ -87,6 +88,7 @@ class Triples(SparqlQuery):
 	def __str__(self):
 		return 'SELECT count(*) FROM <' + self.graph + '> WHERE { ?s ?p ?o}'
 
+
 class E2ETriples(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of triples
@@ -94,7 +96,7 @@ class E2ETriples(SparqlQuery):
 
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT * FROM <' + self.graph + \
-		'> WHERE {?s ?p ?o {SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
+			'> WHERE {?s ?p ?o {SELECT DISTINCT ?p WHERE { ?s ?p ?o . ?o rdf:type ?c}}}'
 
 
 class E2LTriples(SparqlQuery):
@@ -104,7 +106,8 @@ class E2LTriples(SparqlQuery):
 
 	def __str__(self):
 		return 'SELECT * FROM <' + self.graph + '> WHERE { ?s ?p ?o . {SELECT DISTINCT ?p' + \
-		'WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}}'
+			'WHERE { ?s ?p ?o . FILTER isLiteral(?o)}}}'
+
 
 class Entities(SparqlQuery):
 	"""
@@ -112,7 +115,7 @@ class Entities(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?s FROM <' + \
-				self.graph + '> WHERE {?s rdf:type ?c}'
+			self.graph + '> WHERE {?s rdf:type ?c}'
 
 
 class Relations(SparqlQuery):
@@ -121,7 +124,7 @@ class Relations(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?p FROM <' + \
-				self.graph + '> WHERE { ?s ?p ?o . ?o rdf:type ?c}'
+			self.graph + '> WHERE { ?s ?p ?o . ?o rdf:type ?c}'
 
 
 class Attributes(SparqlQuery):
