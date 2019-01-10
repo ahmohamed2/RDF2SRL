@@ -1,4 +1,5 @@
 import itertools
+import pandas as pd
 from pandas import Series
 
 from .queries import *
@@ -99,6 +100,12 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of entity to literal triples
 		"""
 		query_string = str(NE2LTriples(self.graph))
+		result = self.client.execute_query(query_string, limit=1)
+		result = result.values.tolist()[0][0]
+		return result
+
+	def num_rdf_type_triples(self):
+		query_string = str(NRDFTTypeTriples(self.graph))
 		result = self.client.execute_query(query_string, limit=1)
 		result = result.values.tolist()[0][0]
 		return result
@@ -223,8 +230,9 @@ class RDFGraphDataset(object):
 		:param return_format: one of ['list', 'df']
 		:return: the triples in the graph in the specified format
 		"""
-		query_string = str(Entities(self.graph))
+		query_string = str(Triples(self.graph))
 		result_df = self.client.execute_query(query_string)
+		result_df.columns = ['subject', 'object', 'predicate']
 		# find the dictionary mapping each entity to its index
 		if entity2idx is None:
 			if self.entity2idx is None:
@@ -237,13 +245,10 @@ class RDFGraphDataset(object):
 				predicate2idx = self.predicates('dict')
 			else:
 				predicate2idx = self.predicate2idx
-		# rearrange columns to be subject, object, predicate
-		result_df.columns = ['subject', 'predicate', 'object']
-		result_df = result_df[['subject', 'object', 'predicate']]
 		# map the entities and predicates to their indices
-		result_df = result_df.replace({'subject': entity2idx})
-		result_df = result_df.replace({'object': entity2idx})
-		result_df = result_df.replace({'predicate': predicate2idx})
+		result_df.replace({'subject': entity2idx}, inplace=True)
+		result_df.replace({'object': entity2idx}, inplace=True)
+		result_df.replace({'predicate': predicate2idx}, inplace=True)
 
 		if return_format == 'list':
 			return result_df.values.tolist()
@@ -260,6 +265,7 @@ class RDFGraphDataset(object):
 		"""
 		query_string = str(E2ETriples(self.graph))
 		result_df = self.client.execute_query(query_string)
+		rdf_triples_df = self.client.execute_query(str(RDFTTypeTriples(self.graph)))
 		# find the dictionary mapping each entitt to its index
 		if entity2idx is None:
 			if self.entity2idx is None:
@@ -275,7 +281,9 @@ class RDFGraphDataset(object):
 
 		# rearrange columns to be subject, object, relation
 		result_df.columns = ['subject', 'predicate', 'object']
-		result_df = result_df[['subject', 'object', 'predicate']]
+		rdf_triples_df.columns = ['subject', 'predicate', 'object']
+		result_df = pd.concat([result_df, rdf_triples_df], ignore_index=True)
+		#result_df = result_df[['subject', 'object', 'predicate']]
 		# map the subjects to their indices
 		result_df = result_df.replace({'subject': entity2idx})
 		result_df = result_df.replace({'object': entity2idx})

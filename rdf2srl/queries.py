@@ -20,7 +20,6 @@ class NTriples(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of triples
 	"""
-
 	def __str__(self):
 		return 'SELECT count(DISTINCT*)' + self.graph + 'WHERE { ?s ?p ?o}'
 
@@ -29,19 +28,29 @@ class NE2ETriples(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of triples
 	"""
-
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(*)' + self.graph + \
-			'WHERE { { SELECT DISTINCT ?s ?p ?o WHERE { ?s ?p ?o {SELECT DISTINCT ?p' + self.graph+ 'WHERE { ?a ?p ?b . ?b rdf:type ?c}}}}}'
+			'WHERE {{ SELECT DISTINCT ?s ?p ?o WHERE { ?s ?p ?o {SELECT DISTINCT ?p' + self.graph+ \
+			'WHERE { ?a ?p ?b . ?b rdf:type ?c}}}} UNION {SELECT DISTINCT ?s (rdf:type as ?p) ?o' + self.graph \
+			+ 'WHERE {?s rdf:type ?o }}}'
 
 
 class NE2LTriples(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of triples
 	"""
-
 	def __str__(self):
-		return 'SELECT count(*)' + self.graph + 'WHERE { {SELECT DISTINCT ?s ?p ?o WHERE {?s ?p ?o . {SELECT DISTINCT ?p'+ self.graph + 'WHERE { ?a ?p ?b . FILTER isLiteral(?b)}}}}}'
+		return 'SELECT count(DISTINCT *)' + self.graph + 'WHERE { {SELECT DISTINCT ?s ?p ?o WHERE {?s ?p ?o . {SELECT DISTINCT ?p'+ self.graph + 'WHERE { ?a ?p ?b . FILTER isLiteral(?b)}}}}}'
+
+
+class NRDFTTypeTriples(SparqlQuery):
+	"""
+	A class for the sparql query that returns the number of (?s rdf:type ?c) triples
+	"""
+	def __str__(self):
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(*) WHERE { {SELECT DISTINCT ?s rdf:type ?o' + self.graph + \
+			'WHERE {?s rdf:type ?o }}}'
+
 
 class NEntities(SparqlQuery):
 	"""
@@ -63,7 +72,7 @@ class NRelations(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?p)' + \
-			self.graph + 'WHERE { ?s ?p ?o . ?o rdf:type ?c}'
+			self.graph + 'WHERE { {?s ?p ?o . ?o rdf:type ?c} UNION {SELECT (rdf:type as ?p) WHERE {}} }'
 
 
 class NAttributes(SparqlQuery):
@@ -88,24 +97,28 @@ class Triples(SparqlQuery):
 	A class for the sparql query that returns the triples
 	"""
 	def __str__(self):
-		return 'SELECT count(*)' + self.graph + 'WHERE { ?s ?p ?o}'
+		return 'SELECT DISTINCT ?s ?o ?p' + self.graph + 'WHERE { ?s ?p ?o}'
 
 
 class E2ETriples(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of triples
 	"""
-
 	def __str__(self):
-		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT *' + self.graph + \
-			'WHERE {?s ?p ?o . {SELECT DISTINCT ?p WHERE { ?a ?p ?b . ?b rdf:type ?c}}}'
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?s ?o ?p' + self.graph + \
+			'WHERE {?s ?p ?o . {SELECT ?p WHERE { ?a ?p ?b . ?b rdf:type ?c}}}'
+
+
+class RDFTTypeTriples(SparqlQuery):
+	def __str__(self):
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT (?s ?o rdf:type as ?p)' + self.graph + \
+			'WHERE {?s rdf:type ?o }'
 
 
 class E2LTriples(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of triples
 	"""
-
 	def __str__(self):
 		return 'SELECT *' + self.graph + 'WHERE { ?s ?p ?o . {SELECT DISTINCT ?p' + \
 			'WHERE { ?a ?p ?b . FILTER isLiteral(?b)}}}'
@@ -126,7 +139,7 @@ class Relations(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?p' + \
-			self.graph + 'WHERE { ?s ?p ?o . ?o rdf:type ?c}'
+			self.graph + 'WHERE { {?s ?p ?o . ?o rdf:type ?c} UNION {SELECT (rdf:type as ?p) WHERE {}} } '
 
 
 class Attributes(SparqlQuery):
@@ -178,7 +191,7 @@ class Objects(SparqlQuery):
 		self.p = p
 
 	def __str__(self):
-		return 'SELECT DISTINCT ?p' + self.graph + 'WHERE { ?s ' + self.p + ' ?o }'
+		return 'SELECT DISTINCT ?o' + self.graph + 'WHERE { ?s ' + self.p + ' ?o }'
 
 
 class PredicatesFreq(SparqlQuery):
@@ -188,4 +201,4 @@ class PredicatesFreq(SparqlQuery):
 		?s p ?o
 	"""
 	def __str__(self):
-		return 'SELECT COUNT(DISTINCT *)' + self.graph + 'WHERE { ?s ?p ?o } GROUPBY ?p'
+		return 'SELECT ?p COUNT(DISTINCT *)' + self.graph + 'WHERE { ?s ?p ?o } GROUPBY ?p'

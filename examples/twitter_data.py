@@ -2,9 +2,10 @@ import sys
 sys.path.append('/home/amohamed/RDF2SRL/')
 from rdf2srl.rdfloader import RDFGraphDataset
 
+# TODO: fix the turtle files to have different predicates for the location
 loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
 
-#m = loader.num_triples() # 49,216,628
+#m = loader.num_triples() # 48,656,319
 #print("m = {}".format(m))
 #n_e = loader.num_entities() # 5,250,147
 #print("n_e = {}".format(n_e))
@@ -19,12 +20,13 @@ loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", grap
 
 #print("n_e = {}  n_p = {}  n_r = {}  n_a = {}  n_al = {}  m = {}".format(n_e, n_p, n_r, n_a, n_al, m))
 
-#e2l_m = loader.num_entity2literal_triples() # 32,427,451
-#print("num_entity2literal_triples = {}".format(e2l_m))
+#e2l_m = loader.num_entity2literal_triples() # 32,427,451 OR 32,676,993
+#print("num_entity2literal_triples = {}".format(e2l_m)) # 17,656,907
 #e2e_m = loader.num_entity2entity_triples()
-#print("num_entity2entity_triples = {}".format(e2e_m))
+#print("num_entity2entity_triples = {}".format(e2e_m)) 
+#num_rdf_type_triples = loader.num_rdf_type_triples()
+#print("num_rdf_type_triples = {}".format(num_rdf_type_triples)) # 5,250,147
 #print("m = {}  e2l_m+e2e_m = {}".format(m, e2l_m+e2e_m))
-
 
 #predicates_dict = loader.predicates('dict')
 #print("predicates_dict = \n{}".format(predicates_dict))
@@ -47,5 +49,11 @@ loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", grap
 #print("attributes_df = \n{}".format(attributes_df))
 #print("attributes_list = \n{}".format(attributes_list))
 
+#entities_dict = loader.entities('dict') # len = 5,250,147 
+#print("entities_dict size = {} \n entities_dict = \n {}".format(len(entities_dict), entities_dict.items()[:10]))
+
+#triples_list = loader.triples('list', entity2idx=entities_dict, predicate2idx=predicates_dict)
+#print("triples_list = \n{}".format(triples_list[:10]))
+
 triples_list = loader.triples('list')
-print("triples_list = \n{}".format(triples_list[10]))
+#print(triples_list)

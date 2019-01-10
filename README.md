@@ -7,6 +7,7 @@ It provides some convenience functions that send sparql queries in http
 requests for both public and private sparql endpoints. 
 
 ## Getting Started
+### Collecting Statistics about the data
 We can use this package to get some statistics about the DBpedia dataset.
 Let's use the [DBpedia public endpoint](http://dbpedia.org/sparql) provided 
 by [OpenLink Virtuoso](http://dbpedia.org/page/Virtuoso_Universal_Server)
@@ -34,22 +35,44 @@ find the number of entity to entity triples.
 ```python
 num_e2l_triples = loader.num_entity2literal_triples()
 ```
+### Collecting Statistics about the data
 
 We can also use the package to access the entities in the graph. A useful format for
-relational learning is a dictionary that maps each entity to an index that starts
-from 0 to n_entities-1.
+relational learning models is a dictionary that maps each entity to an index that starts
+from 0 to n_entities-1. Other available formats are pandas dataframes and python lists.
 ```python
 entity2idx = loader.entities('dict')
 ```
 Similarly, we can get all the entity-to-entity predicates in the graph. A useful format for
-relational learning is a dictionary that maps each predicate to an index that starts
-from 0 to n_relations-1.
+relational learning models is a dictionary that maps each predicate to an index that starts
+from 0 to n_relations-1. Other available formats are pandas dataframes and python lists.
 ```python
 relation2idx = loader.relations('dict')
 ```
-Now, we can get the triples in the dataset as list of tuples where the values inside triples represent the
-indices in ```entity2idx``` and ```relation2idx```
+Now, we can get the triples in the dataset as list of tuples where the values inside the tuples represent the
+indices in ```entity2idx``` and ```relation2idx```. Other available formats are pandas dataframes.
 ```python
 triples = loader.triples('list')
 ```
 
+## list of the convenience functions available:
+RDFGraphDataset.num_entities()  
+RDFGraphDataset.num_predicates()  
+RDFGraphDataset.num_relations()  
+RDFGraphDataset.num_attributes()  
+RDFGraphDataset.num_attr_literal_pairs()  
+RDFGraphDataset.num_triples()  
+RDFGraphDataset.num_entity2literal_triples()  
+RDFGraphDataset.num_entity2entity_triples()  
+RDFGraphDataset.num_rdf_type_triples()  
+RDFGraphDataset.predicates(format) where format is one of ['dict', 'df', 'list']  
+RDFGraphDataset.relations(format) where format is one of ['dict', 'df', 'list']  
+RDFGraphDataset.attributes(format) where format is one of ['dict', 'df', 'list']  
+RDFGraphDataset.entities(format) where format is one of ['dict', 'df', 'list']  
+RDFGraphDataset.attr_literal_pairs()  
+RDFGraphDataset.triples(format) where format is one of ['df', 'list']  
+RDFGraphDataset.entity2entity_triples(format) where format is one of ['df', 'list']  
+RDFGraphDataset.entity2literal_triples(format) where format is one of ['df', 'list']  
+RDFGraphDataset.subjects(predicate)  
+RDFGraphDataset.objects(predicate)  
+RDFGraphDataset.predicates_freq()  

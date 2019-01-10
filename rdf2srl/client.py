@@ -6,8 +6,8 @@ import pandas as pd
 
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
-_MAX_ROWS = 10000 # maximin rows returned in the result set
-_TIMEOUT = 600 # in seconds
+_MAX_ROWS = 1000000 # maximum number of rows returned in the result set
+_TIMEOUT = 900 # in seconds
 
 class Client(object):
     """
@@ -45,7 +45,7 @@ class Client(object):
         """
         self.endpoint = endpoint
 
-    def execute_query(self, query, limit=_MAX_ROWS,output_file=None):
+    def execute_query(self, query, limit=_MAX_ROWS, output_file=None):
         """
         Connects to the sparql endpoint, sends the query and returns a dataframe containing the result of a sparql query
         :param query: a valid sparql query string
@@ -55,9 +55,9 @@ class Client(object):
         :return: a pandas dataframe representing the result of the query
         """
         client = SPARQLWrapper(self.endpoint)
-        client.setTimeout(_TIMEOUT) # set the timeout to 60000 msec
+        client.setTimeout(_TIMEOUT)
         offset = 0
-        results_string = "callret-0\n" # where all the results are concatenated
+        results_string = "" # where all the results are concatenated
         continue_straming = True
         while continue_straming:
             if limit > 1:
@@ -67,9 +67,10 @@ class Client(object):
             client.setQuery(query_string)
             try:
                 client.setReturnFormat(CSV)
-                results = client.query().convert()[len("callret-0\n")+2:] # string
+                header = client.query().convert().split("\n",1)[0]
+                results = client.query().convert().split("\n",1)[1] # string
                 # if the number of rows is less then the maximum number of rows
-                if len(results) < _MAX_ROWS:
+                if results.count('\n') < _MAX_ROWS:
                     continue_straming = False
                 offset = offset + limit
             except Exception as e:
@@ -77,6 +78,7 @@ class Client(object):
                 sys.exit()
             results_string += results.decode("utf-8")
         # convert it to a dataframe
+        results_string = header + "\n" + results_string
         f = io.StringIO(results_string)
         f.seek(0)
         df = pd.read_csv(f, sep=',') # to get the values and the header
