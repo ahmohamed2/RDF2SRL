@@ -201,4 +201,4 @@ class PredicatesFreq(SparqlQuery):
 		?s p ?o
 	"""
 	def __str__(self):
-		return 'SELECT ?p COUNT(DISTINCT *)' + self.graph + 'WHERE { ?s ?p ?o } GROUPBY ?p'
+		return 'SELECT ?p COUNT(DISTINCT *)' + self.graph + 'WHERE { ?s ?p ?o } GROUP BY ?p'
