@@ -1,5 +1,3 @@
-import sys
-sys.path.append('/home/amohamed/RDF2SRL/')
 from rdf2srl.rdfloader import RDFGraphDataset
 
 # TODO: fix the turtle files to have different predicates for the location
