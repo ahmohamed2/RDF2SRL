@@ -173,7 +173,7 @@ class Subjects(SparqlQuery):
 		?s p ?o
 	"""
 	def __init__(self, graph, p):
-		super(SparqlQuery, self).__init__(graph)
+		super(Subjects, self).__init__(graph)
 		self.p = p
 
 	def __str__(self):
@@ -187,7 +187,7 @@ class Objects(SparqlQuery):
 		?s p ?o
 	"""
 	def __init__(self, graph, p):
-		super(SparqlQuery, self).__init__(graph)
+		super(Objects, self).__init__(graph)
 		self.p = p
 
 	def __str__(self):
@@ -202,3 +202,29 @@ class PredicatesFreq(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'SELECT ?p COUNT(DISTINCT *)' + self.graph + 'WHERE { ?s ?p ?o } GROUP BY ?p'
+
+
+class PTriples(SparqlQuery):
+	def __init__(self, graph, p):
+		super(PTriples, self).__init__(graph)
+		self.p = p
+
+	def __str__(self):
+		return 'SELECT DISTINCT ?s ?o <'+ self.p + '>' + self.graph + 'WHERE { ?s <' + self.p +'> ?o }'
+
+
+"""
+class PTriples(SparqlQuery):
+	def __init__(self, graph, p):
+		super(PTriples, self).__init__(graph)
+		self.p = p
+		idx = max(self.p.rfind("/"), self.p.rfind("#"))
+		if idx >= 0:
+			self.prefix = "PREFIX a: <"+self.p[:idx+1]+"> "
+			self.p = "a:"+self.p[idx+1:]
+		else:
+			self.prefix = ""
+
+	def __str__(self):
+		return self.prefix + 'SELECT DISTINCT ?s ?o '+ self.p + self.graph + 'WHERE { ?s ' + self.p +' ?o }'
+"""

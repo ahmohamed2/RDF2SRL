@@ -1,9 +1,9 @@
 import sys
 sys.path.append('/home/amohamed/RDF2SRL/')
-from rdf2srl.rdfloader import RDFGraphDataset
+from rdf2srl.smartloader import SmartRDFGraphDataset
 
 # TODO: fix the turtle files to have different predicates for the location
-loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
+loader = SmartRDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
 
 #m = loader.num_triples() # 48,656,319
 #print("m = {}".format(m))
@@ -55,5 +55,6 @@ loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", grap
 #triples_list = loader.triples('list', entity2idx=entities_dict, predicate2idx=predicates_dict)
 #print("triples_list = \n{}".format(triples_list[:10]))
 
-triples_list = loader.triples('list')
-#print(triples_list)
+triples_list = loader.entity2entity_triples(return_format='list',
+	output_dir='/home/amohamed/Collective_Classification/data/new_twitter')
+print(triples_list[:10])
