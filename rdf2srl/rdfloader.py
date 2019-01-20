@@ -153,7 +153,7 @@ class RDFGraphDataset(object):
 		elif return_format == 'df':
 			return result_df
 		elif return_format == 'list':
-			return list(itertools.chain(*result_df['predicate'].values))		
+			return result_df['predicate'].values	
 
 	def relations(self, return_format='dict'):
 		"""
@@ -209,7 +209,11 @@ class RDFGraphDataset(object):
 		result_df = self.client.execute_query(query_string)
 		# set the column name to "attribute_literal_pair"
 		result_df.columns = ['attribute', 'literal']
-		result_df['attribute_literal_pair'] = result_df[['attribute', 'literal']].apply(lambda x: ','.join(str(x)), axis=1)
+		result_df["attribute_literal_pair"] = result_df["attribute"] + result_df["literal"].map(str)
+
+		#result_df['attribute_literal_pair'] = result_df[['attribute', 'literal']].apply(lambda x: ','.join(str(x)), axis=1)
+		print("IN attr_literal_pairs", result_df.columns)
+		print("IN attr_literal_pairs", result_df.head())
 		# create a new column for the index
 		result_df.reset_index(level=0, inplace=True)
 		attribute_literal_pair2idx = Series(result_df['index'].values, index=result_df['attribute_literal_pair'].values).to_dict()
