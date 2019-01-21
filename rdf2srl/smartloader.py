@@ -1,6 +1,4 @@
-import itertools
 import pandas as pd
-from pandas import Series
 import json
 
 
