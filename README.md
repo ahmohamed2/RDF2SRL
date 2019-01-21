@@ -6,6 +6,13 @@ learning models.
 It provides some convenience functions that send sparql queries in http 
 requests for both public and private sparql endpoints. 
 
+
+## Installation
+You can install the RDF2SRL package from PyPI:
+```
+pip install RDF2SRL
+```
+
 ## Getting Started
 ### Collecting Statistics about the data
 We can use this package to get some statistics about the DBpedia dataset.
@@ -56,6 +63,7 @@ triples = loader.triples('list')
 ```
 
 ## list of the convenience functions available:
+```python
 RDFGraphDataset.num_entities()  
 RDFGraphDataset.num_predicates()  
 RDFGraphDataset.num_relations()  
@@ -75,4 +83,5 @@ RDFGraphDataset.entity2entity_triples(format) where format is one of ['df', 'lis
 RDFGraphDataset.entity2literal_triples(format) where format is one of ['df', 'list']  
 RDFGraphDataset.subjects(predicate)  
 RDFGraphDataset.objects(predicate)  
-RDFGraphDataset.predicates_freq()  
+RDFGraphDataset.predicates_freq()
+```

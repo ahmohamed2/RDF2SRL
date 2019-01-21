@@ -2,6 +2,7 @@ import sys
 sys.path.append('/home/amohamed/RDF2SRL/')
 from rdf2srl.smartloader import SmartRDFGraphDataset
 
+
 # TODO: fix the turtle files to have different predicates for the location
 loader = SmartRDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
 
