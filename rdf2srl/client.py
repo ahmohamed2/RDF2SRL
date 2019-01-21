@@ -45,7 +45,7 @@ class Client(object):
         """
         self.endpoint = endpoint
 
-    def execute_query(self, query, limit=_MAX_ROWS, output_file=None):
+    def execute_query(self, query, limit=_MAX_ROWS):
         """
         Connects to the sparql endpoint, sends the query and returns a dataframe containing the result of a sparql query
         :param query: a valid sparql query string
@@ -82,7 +82,4 @@ class Client(object):
         f = io.StringIO(results_string)
         f.seek(0)
         df = pd.read_csv(f, sep=',') # to get the values and the header
-
-        if output_file is not None:
-            df.to_csv(output_file)
         return df

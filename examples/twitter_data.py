@@ -1,19 +1,22 @@
-from rdf2srl.rdfloader import RDFGraphDataset
+import sys
+sys.path.append('/home/amohamed/RDF2SRL/')
+from rdf2srl.smartloader import SmartRDFGraphDataset
+
 
 # TODO: fix the turtle files to have different predicates for the location
-loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
+loader = SmartRDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
 
-#m = loader.num_triples() # 48,656,319
+#m = loader.num_triples() # 48,656,319 now, 48,843,722
 #print("m = {}".format(m))
 #n_e = loader.num_entities() # 5,250,147
 #print("n_e = {}".format(n_e))
 #n_p = loader.num_predicates() # 30
 #print("n_p = {}".format(n_p))
-#n_r = loader.num_relations() # 10
+#n_r = loader.num_relations() # 10  now, 11
 #print("n_r = {}".format(n_r))
 #n_a = loader.num_attributes() # 20
 #print("n_a = {}".format(n_a))
-#n_al = loader.num_attr_literal_pairs() # 14,449,483
+#n_al = loader.num_attr_literal_pairs() # 14,449,483  14,449,430
 #print("n_al = {}".format(n_al))
 
 #print("n_e = {}  n_p = {}  n_r = {}  n_a = {}  n_al = {}  m = {}".format(n_e, n_p, n_r, n_a, n_al, m))
@@ -52,6 +55,16 @@ loader = RDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", grap
 
 #triples_list = loader.triples('list', entity2idx=entities_dict, predicate2idx=predicates_dict)
 #print("triples_list = \n{}".format(triples_list[:10]))
+subjects = loader.subjects("http://twitter.com/ontology/hasposition",return_format='list')
+print(subjects[:10])
+objects = loader.objects("http://twitter.com/ontology/hasposition",return_format='list')
+print(objects[:10])
 
-triples_list = loader.triples('list')
-#print(triples_list)
+triples_list = loader.entity2entity_triples(return_format='list',
+	output_dir='/home/amohamed/Collective_Classification/data/new_twitter/final_data')
+print(triples_list[:10])
+
+
+#e2l_triples = loader.entity2literal_triples(return_format='list',
+#	output_dir='/home/amohamed/Collective_Classification/data/new_twitter')
+#print(e2l_triples[:10])
