@@ -20,13 +20,11 @@ Let's use the [DBpedia public endpoint](http://dbpedia.org/sparql) provided
 by [OpenLink Virtuoso](http://dbpedia.org/page/Virtuoso_Universal_Server)
 
 First, import the ```RDFGraphDataset``` class from the python package ```rdf2srl```
+and initialize the ```RDFGraphDataset``` class with the endpoint URI and the graph URI
+
 ```python
 from rdf2srl import RDFGraphDataset
-```
-Second,
-initialize the ```RDFGraphDataset``` class with the endpoint URI and the graph URI
-```python
-    loader = RDFGraphDataset(sparql_endpoint="http://dbpedia.org/sparql", graph_name='http://dbpedia.org/')
+loader = RDFGraphDataset(sparql_endpoint="http://dbpedia.org/sparql", graph_name='http://dbpedia.org/')
 ```
 Now, Let's find the number of (subject, predicate, object) triples in the DBpedia graph:
 ```python
@@ -73,15 +71,16 @@ RDFGraphDataset.num_triples()
 RDFGraphDataset.num_entity2literal_triples()  
 RDFGraphDataset.num_entity2entity_triples()  
 RDFGraphDataset.num_rdf_type_triples()  
-RDFGraphDataset.predicates(format) where format is one of ['dict', 'df', 'list']  
-RDFGraphDataset.relations(format) where format is one of ['dict', 'df', 'list']  
-RDFGraphDataset.attributes(format) where format is one of ['dict', 'df', 'list']  
-RDFGraphDataset.entities(format) where format is one of ['dict', 'df', 'list']  
+RDFGraphDataset.predicates(format) # where format is one of ['dict', 'df', 'list']  
+RDFGraphDataset.relations(format) # where format is one of ['dict', 'df', 'list']  
+RDFGraphDataset.attributes(format) # where format is one of ['dict', 'df', 'list']  
+RDFGraphDataset.entities(format) # where format is one of ['dict', 'df', 'list']  
 RDFGraphDataset.attr_literal_pairs()  
-RDFGraphDataset.triples(format) where format is one of ['df', 'list']  
-RDFGraphDataset.entity2entity_triples(format) where format is one of ['df', 'list']  
-RDFGraphDataset.entity2literal_triples(format) where format is one of ['df', 'list']  
+RDFGraphDataset.triples(format) # where format is one of ['df', 'list']  
+RDFGraphDataset.entity2entity_triples(format) # where format is one of ['df', 'list']  
+RDFGraphDataset.entity2literal_triples(format) # where format is one of ['df', 'list']  
 RDFGraphDataset.subjects(predicate)  
 RDFGraphDataset.objects(predicate)  
 RDFGraphDataset.predicates_freq()
 ```
+
