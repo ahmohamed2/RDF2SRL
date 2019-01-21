@@ -3,6 +3,7 @@ import pandas as pd
 from pandas import Series
 import json
 
+
 from .queries import *
 from .client import Client
 from .rdfloader import RDFGraphDataset
@@ -80,17 +81,14 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 				entity2idx = self.entities('dict')
 			else:
 				entity2idx = self.entity2idx
-		print(len(entity2idx))
 		# find the dictionary mapping each relation to its index
 		if attribute_literal_pair2idx is None:
 			if self.attribute_literal_pair2idx is None:
 				attribute_literal_pair2idx = self.attr_literal_pairs('dict')
 			else:
 				attribute_literal_pair2idx = self.attribute_literal_pair2idx
-		print(len(attribute_literal_pair2idx))
 
 		attributes = self.attributes('dict')
-		print(attributes)
 
 		results_df = pd.DataFrame(columns=['subject', 'attribute_literal_pair'])
 		for attribute in attributes:
@@ -101,10 +99,6 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 			result_df = result_df.drop(columns=['object', 'predicate'])
 			result_df['subject'] = result_df['subject'].map(entity2idx)
 			result_df['attribute_literal_pair'] = result_df['attribute_literal_pair'].map(attribute_literal_pair2idx)
-			
-			print(result_df.columns)
-			print(result_df.head())
-			print(results_df.columns)
 			results_df = pd.merge(results_df, result_df, how='outer')
 		
 		if output_dir is not None:
@@ -124,7 +118,7 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 			return results_df
 
 
-	def subjects(self, p, entity2idx=None, return_format='list'):
+	def subjects(self, p, entity2idx=None, return_format='list', output_dir=None):
 		"""
 		A function that returns all the subjects of predicate p in the specified graph as indices rather than URIs
 		:param entity2idx: a dictionary mapping each entity in the graph to an index from 0 to n_entities-1
@@ -144,8 +138,13 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		# map the subjects to their indices
 		result_df['subject'] = result_df['subject'].map(entity2idx)
 
+		if output_dir is not None:
+			with open(output_dir+"{}_subjects.csv".format(p), "wb") as f:
+    			writer = csv.writer(f)
+    			writer.writerows(result_df.values.tolist())
+
 		if return_format == 'list':
-			return result_df.values
+			return result_df['subject'].values
 		elif return_format == 'df':
 			return result_df
 
@@ -169,8 +168,12 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		# map the subjects to their indices
 		result_df['object'] = result_df['object'].map(entity2idx)
 
+		if output_dir is not None:
+			with open(output_dir+"{}_objects.csv".format(p), "wb") as f:
+    			writer = csv.writer(f)
+    			writer.writerows(result_df.values.tolist())
 		if return_format == 'list':
-			return result_df.values
+			return result_df['object'].values
 		elif return_format == 'df':
 			return result_df
 
