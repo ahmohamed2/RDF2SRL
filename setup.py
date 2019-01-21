@@ -7,7 +7,7 @@ path = pathlib.Path(__file__).parent
 readme_content = (path / "README.md").read_text()
 
 setup(name="rdf2srl",
-      version="1.0.2",
+      version="1.0.3",
       description="Exposes RDF datasets from sparql endpoints for relational learning models in convenient formats",
       long_description=readme_content,
       long_description_content_type="text/markdown",
