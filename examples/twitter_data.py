@@ -1,15 +1,14 @@
-import sys
-sys.path.append('/home/amohamed/RDF2SRL/')
 from rdf2srl.smartloader import SmartRDFGraphDataset
 
-
-# TODO: fix the turtle files to have different predicates for the location
-loader = SmartRDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
+if __name__ == "__main__":
+	# TODO: fix the turtle files to have different predicates for the location
+	loader = SmartRDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
+	n_e = loader.num_entities() # 5,250,147
+	print("n_e = {}".format(n_e))
 
 #m = loader.num_triples() # 48,656,319 now, 48,843,722
 #print("m = {}".format(m))
-#n_e = loader.num_entities() # 5,250,147
-#print("n_e = {}".format(n_e))
+
 #n_p = loader.num_predicates() # 30
 #print("n_p = {}".format(n_p))
 #n_r = loader.num_relations() # 10  now, 11

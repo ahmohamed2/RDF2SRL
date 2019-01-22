@@ -67,8 +67,9 @@ class Client(object):
             client.setQuery(query_string)
             try:
                 client.setReturnFormat(CSV)
-                header = client.query().convert().split("\n",1)[0]
-                results = client.query().convert().split("\n",1)[1] # string
+                res = client.query().convert().split("\n",1)
+                header = res[0]
+                results = res[1] # string
                 # if the number of rows is less then the maximum number of rows
                 if results.count('\n') < _MAX_ROWS:
                     continue_straming = False
