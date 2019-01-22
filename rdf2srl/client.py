@@ -64,10 +64,11 @@ class Client(object):
                 query_string = query+" OFFSET {} LIMIT {}".format(str(offset), str(limit))
             else:
                 query_string = query
+            query_string = query_string.encode()
             client.setQuery(query_string)
             try:
                 client.setReturnFormat(CSV)
-                res = client.query().convert().split("\n",1)
+                res = client.query().convert().decode("utf8").split("\n",1)
                 header = res[0]
                 results = res[1] # string
                 # if the number of rows is less then the maximum number of rows
@@ -77,7 +78,7 @@ class Client(object):
             except Exception as e:
                 print(e)
                 sys.exit()
-            results_string += results.decode("utf-8")
+            results_string += results
         # convert it to a dataframe
         results_string = header + "\n" + results_string
         f = io.StringIO(results_string)
