@@ -6,8 +6,15 @@ learning models.
 It provides some convenience functions that send sparql queries in http 
 requests for both public and private sparql endpoints. 
 
+Starting from version 1.0.3, a ```SmartRDFGraphDataset``` class is added that performs
+client-side optimization of the Sparql query processing. This improves the performance 
+if the configuration of the public endpoint isn't tuned for a specific query.
 
 ## Installation
+You cna install the requirements using 
+```
+pip install -r requiremtns.txt
+```
 You can install the RDF2SRL package from PyPI:
 ```
 pip install RDF2SRL
@@ -40,7 +47,7 @@ find the number of entity to entity triples.
 ```python
 num_e2l_triples = loader.num_entity2literal_triples()
 ```
-### Collecting Statistics about the data
+### Loading the dataset into a dataframe
 
 We can also use the package to access the entities in the graph. A useful format for
 relational learning models is a dictionary that maps each entity to an index that starts
@@ -54,8 +61,10 @@ from 0 to n_relations-1. Other available formats are pandas dataframes and pytho
 ```python
 relation2idx = loader.relations('dict')
 ```
-Now, we can get the triples in the dataset as list of tuples where the values inside the tuples represent the
-indices in ```entity2idx``` and ```relation2idx```. Other available formats are pandas dataframes.
+Now, we can get the triples in the dataset in a dataframe of three columns: [subject, object, predicate]
+where the values inside the tuples represent the indices in ```entity2idx``` and ```relation2idx```.
+The other available format is python list.
+The dataframe can be saved in ```csv``` file if output_dir is passed.
 ```python
 triples = loader.triples('list')
 ```
