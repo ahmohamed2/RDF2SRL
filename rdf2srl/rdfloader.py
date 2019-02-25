@@ -1,4 +1,6 @@
+from collections import defaultdict
 import itertools
+
 import pandas as pd
 from pandas import Series
 
@@ -118,14 +120,22 @@ class RDFGraphDataset(object):
 		"""
 		query_string = str(Entities(self.graph))
 		result_df = self.client.execute_query(query_string)
+		classes_query_string = str(Classes(self.graph))
+		classes_df = self.client.execute_query(classes_query_string)
 		# set the column name to "entity"
 		result_df.columns = ['entity']
+		classes_df.columns = ['entity']
 		# create a new column for the index
 		result_df.reset_index(level=0, inplace=True)
+		classes_df.reset_index(level=0, inplace=True)
+		# merge the two classes
+		result_df = pd.merge(result_df, classes_df, how='outer')
+		#print("Does the returned dataframe from entities contain null data?", result_df.isnull().values.any())
 		entity2idx = Series(result_df['index'].values, index=result_df['entity'].values).to_dict()
 		self.entity2idx = entity2idx
 
 		if return_format == 'dict':
+			#return defaultdict(lambda: 'missing', entity2idx)
 			return entity2idx
 		elif return_format == 'df':
 			return result_df
@@ -212,8 +222,6 @@ class RDFGraphDataset(object):
 		result_df["attribute_literal_pair"] = result_df["attribute"] + result_df["literal"].map(str)
 
 		#result_df['attribute_literal_pair'] = result_df[['attribute', 'literal']].apply(lambda x: ','.join(str(x)), axis=1)
-		print("IN attr_literal_pairs", result_df.columns)
-		print("IN attr_literal_pairs", result_df.head())
 		# create a new column for the index
 		result_df.reset_index(level=0, inplace=True)
 		attribute_literal_pair2idx = Series(result_df['index'].values, index=result_df['attribute_literal_pair'].values).to_dict()

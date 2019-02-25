@@ -1,3 +1,4 @@
+
 import pandas as pd
 import json
 import csv
@@ -17,8 +18,8 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 	def __init__(self, sparql_endpoint, graph_name=None):
 		super(SmartRDFGraphDataset, self).__init__(sparql_endpoint, graph_name)
 
-	def entity2entity_triples(self, return_format='list', entity2idx=None, relation2idx=None,
-		return_dict = False, output_dir=None):
+	def entity2entity_triples(self, return_format='list',
+		entity2idx=None, relation2idx=None, return_dict = False, output_dir=None):
 		"""
 		A function that returns all the entity2entity triples in the specified graph as indices rather than URIs
 		:param entity2idx: a dictionary mapping each entity in the graph to an index from 0 to n_entities-1
@@ -43,11 +44,28 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 			query_string = str(PTriples(self.graph, relation))
 			result_df = self.client.execute_query(query_string)
 			result_df.columns = ['subject', 'object', 'predicate']
+			#print("Does the returned dataframe from entity2entity_triples for predicate {} contain null data?".format(relation), result_df.isnull().values.any())
+			#print("size of the dataframe = {}".format(result_df.shape))
+			#filtered = []
+			#for subject in result_df.subject:
+			#	if subject not in entity2idx:
+			#		filtered.append(subject)
+			#filtered =  pd.DataFrame(filtered)
+			#print("subjects that are not in the entity2idx dict are of shape {}".format(filtered.shape))
+			#print(filtered)
+			#filtered = []
+			#for obj in result_df.object:
+			#	if obj not in entity2idx:
+			#		filtered.append(obj)
+			#filtered =  pd.DataFrame(filtered)
+			#print("objects that are not in the entity2idx dict are of shape {}".format(filtered.shape))
+			#print(filtered)			
 			result_df['subject'] = result_df['subject'].map(entity2idx)
 			result_df['object'] = result_df['object'].map(entity2idx)
 			result_df['predicate'] = result_df['predicate'].map(relation2idx)
+			#print("Does the returned dataframe after mapping contain null data?".format(relation), result_df.isnull().values.any())
 			results_df = pd.merge(results_df, result_df, how='outer')
-		
+		results_df = results_df.dropna()
 		if output_dir is not None:
 			results_df.to_csv(output_dir+"/entity2entity_triples.csv", index=False)
 			with open(output_dir+"/relation2idx.json", 'w') as fp:
@@ -136,6 +154,8 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		# map the subjects to their indices
 		result_df['subject'] = result_df['subject'].map(entity2idx)
 
+		result_df = result_df.dropna()
+
 		if output_dir is not None:
 			with open(output_dir+"{}_subjects.csv".format(p), "wb") as f:
 				writer = csv.writer(f)
@@ -166,6 +186,8 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		# map the subjects to their indices
 		result_df['object'] = result_df['object'].map(entity2idx)
 
+		result_df = result_df.dropna()
+
 		if output_dir is not None:
 			with open(output_dir+"{}_objects.csv".format(p), "wb") as f:
 				writer = csv.writer(f)
@@ -177,13 +199,10 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 
 	def predicates_freq(self):
 		predicates = self.predicates('list')
-		print("predicates are {}".format(predicates))
 
 		results_df = pd.DataFrame(columns=['predicate', 'frequency'])
 		for predicate in predicates:
 			query_string = str(NPTriples(self.graph, predicate))
-			print(query_string)
 			result = self.client.execute_query(query_string).values.tolist()[0][0]
-			print(result)
 			results_df = results_df.append({'predicate' : predicate , 'frequency' : result} , ignore_index=True)
 		return results_df

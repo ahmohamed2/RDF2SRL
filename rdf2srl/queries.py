@@ -34,7 +34,6 @@ class NE2ETriples(SparqlQuery):
 			'WHERE { ?a ?p ?b . ?b rdf:type ?c}}}} UNION {SELECT DISTINCT ?s (rdf:type as ?p) ?o' + self.graph \
 			+ 'WHERE {?s rdf:type ?o }}}'
 
-
 class NE2LTriples(SparqlQuery):
 	"""
 	A class for the sparql query that returns the number of triples
@@ -130,6 +129,14 @@ class Entities(SparqlQuery):
 	"""
 	def __str__(self):
 		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?s' + \
+			self.graph + 'WHERE {?s rdf:type ?c}'
+
+class Classes(SparqlQuery):
+	"""
+	A class for the sparql query that returns the entities
+	"""
+	def __str__(self):
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT DISTINCT ?c' + \
 			self.graph + 'WHERE {?s rdf:type ?c}'
 
 
