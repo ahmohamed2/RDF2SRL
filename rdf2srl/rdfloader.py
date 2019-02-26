@@ -39,9 +39,9 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of entities
 		"""
 		query_string = str(NEntities(self.graph))
-		print(query_string)
 		result = self.client.execute_query(query_string, limit=1)
-		result = result.values.tolist()[0][0]
+		n_classes = self.client.execute_query(str(NClasses(self.graph)), limit=1).values.tolist()[0][0]
+		result = result.values.tolist()[0][0] + n_classes
 		return result
 
 	def num_predicates(self):

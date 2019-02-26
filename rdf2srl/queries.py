@@ -60,6 +60,15 @@ class NEntities(SparqlQuery):
 			+ self.graph + 'WHERE {?s rdf:type ?c}'
 
 
+class NClasses(SparqlQuery):
+	"""
+	A class for the sparql query that returns the number of entities
+	"""
+	def __str__(self):
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT count(DISTINCT ?c)' \
+			+ self.graph + 'WHERE {?s rdf:type ?c}'
+
+
 class NPredicates(SparqlQuery):
 	def __str__(self):
 		return 'SELECT COUNT(DISTINCT ?p)' + self.graph + 'WHERE { ?s ?p ?o }'
