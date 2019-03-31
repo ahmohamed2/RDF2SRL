@@ -1,3 +1,6 @@
+import sys
+sys.path.append('/home/amohamed/RDF2SRL/')
+
 from rdf2srl.smartloader import SmartRDFGraphDataset
 
 if __name__ == "__main__":
