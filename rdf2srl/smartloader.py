@@ -27,6 +27,7 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		:param return_format: one of ['list', 'df']
 		:return: the triples in the graph in the specified format
 		"""
+		print("in entity2entity_triples")
 		if entity2idx is None:
 			if self.entity2idx is None:
 				entity2idx = self.entities('dict')

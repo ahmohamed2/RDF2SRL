@@ -9,6 +9,7 @@ __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 _MAX_ROWS = 1000000 # maximum number of rows returned in the result set
 _TIMEOUT = 900 # in seconds
 
+
 class Client(object):
     """
     class for sparql client that handles communication with a sparql end-point
@@ -55,6 +56,7 @@ class Client(object):
         :param limit: the limit of the returned rows
         :return: a pandas dataframe representing the result of the query
         """
+        print(query)
         client = SPARQLWrapper(self.endpoint)
         client.setTimeout(_TIMEOUT)
         offset = 0
