@@ -26,8 +26,8 @@ if __name__ == "__main__":
 #print("n_e = {}  n_p = {}  n_r = {}  n_a = {}  n_al = {}  m = {}".format(n_e, n_p, n_r, n_a, n_al, m))
 
 #e2l_m = loader.num_entity2literal_triples() # 32,427,451 OR 32,676,993
-#print("num_entity2literal_triples = {}".format(e2l_m)) # 17,656,907
-#e2e_m = loader.num_entity2entity_triples()
+#print("num_entity2literal_triples = {}".format(e2l_m))
+#e2e_m = loader.num_entity2entity_triples() # 17,656,907
 #print("num_entity2entity_triples = {}".format(e2e_m)) 
 #num_rdf_type_triples = loader.num_rdf_type_triples()
 #print("num_rdf_type_triples = {}".format(num_rdf_type_triples)) # 5,250,147

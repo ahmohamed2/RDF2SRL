@@ -40,7 +40,7 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 			else:
 				relation2idx = self.relation2idx
 
-		query_string = str(NE2ETriples(self.graph))
+		query_string = str(E2ETriples(self.graph))
 		results_df = self.client.execute_query(query_string)
 		results_df.columns = ['subject', 'object', 'predicate']
 		print("Does the returned dataframe from entity2entity_triples for predicate contain null data? {}".format(results_df.isnull().values.any()))
