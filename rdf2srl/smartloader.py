@@ -39,6 +39,17 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 			else:
 				relation2idx = self.relation2idx
 
+		query_string = str(NE2ETriples(self.graph))
+		results_df = self.client.execute_query(query_string)
+		results_df.columns = ['subject', 'object', 'predicate']
+		print("Does the returned dataframe from entity2entity_triples for predicate contain null data? {}".format(results_df.isnull().values.any()))
+		print("size of the dataframe = {}".format(results_df.shape))
+		results_df['subject'] = results_df['subject'].map(entity2idx)
+		results_df['object'] = results_df['object'].map(entity2idx)
+		results_df['predicate'] = results_df['predicate'].map(relation2idx)
+		print("Does the returned dataframe after mapping contain null data? {}".format(results_df.isnull().values.any()))
+
+		"""
 		results_df = pd.DataFrame(columns=['subject', 'object', 'predicate'])
 		for relation in relation2idx:
 			query_string = str(PTriples(self.graph, relation))
@@ -66,6 +77,7 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 			#print("Does the returned dataframe after mapping contain null data?".format(relation), result_df.isnull().values.any())
 			results_df = pd.merge(results_df, result_df, how='outer')
 		results_df = results_df.dropna()
+		"""
 		if output_dir is not None:
 			results_df.to_csv(output_dir+"/entity2entity_triples.csv", index=False)
 			with open(output_dir+"/relation2idx.json", 'w') as fp:

@@ -59,8 +59,8 @@ class Client(object):
         client.setTimeout(_TIMEOUT)
         offset = 0
         results_string = ""  # where all the results are concatenated
-        continue_straming = True
-        while continue_straming:
+        continue_streaming = True
+        while continue_streaming:
             if limit > 1:  # This query doesn't return one constant value
                 query_string = query + " OFFSET {} LIMIT {}".format(str(offset), str(limit))
             else:
@@ -75,7 +75,7 @@ class Client(object):
                     results_string = header + "\n"
                 # if the number of rows is less then the maximum number of rows
                 if result[1].count('\n') < _MAX_ROWS:
-                    continue_straming = False
+                    continue_streaming = False
                 offset = offset + limit
             except Exception as e:
                 print(e)

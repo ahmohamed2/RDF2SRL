@@ -3,8 +3,11 @@ from rdf2srl.smartloader import SmartRDFGraphDataset
 if __name__ == "__main__":
 	# TODO: fix the turtle files to have different predicates for the location
 	loader = SmartRDFGraphDataset(sparql_endpoint="http://192.168.10.2:8890/sparql", graph_name='http://twitter.com/')
-	n_e = loader.num_entities() # 5,250,147
-	print("n_e = {}".format(n_e))
+	triples_df = loader.entity2entity_triples(return_format='df', output_dir=None)
+	print(triples_df.head())
+
+#n_e = loader.num_entities() # 5,250,147
+#print("n_e = {}".format(n_e))
 
 #m = loader.num_triples() # 48,656,319 now, 48,843,722
 #print("m = {}".format(m))
@@ -53,14 +56,12 @@ if __name__ == "__main__":
 
 #triples_list = loader.triples('list', entity2idx=entities_dict, predicate2idx=predicates_dict)
 #print("triples_list = \n{}".format(triples_list[:10]))
-subjects = loader.subjects("http://twitter.com/ontology/hasposition",return_format='list')
-print(subjects[:10])
-objects = loader.objects("http://twitter.com/ontology/hasposition",return_format='list')
-print(objects[:10])
+#subjects = loader.subjects("http://twitter.com/ontology/hasposition",return_format='list')
+#print(subjects[:10])
+#objects = loader.objects("http://twitter.com/ontology/hasposition",return_format='list')
+#print(objects[:10])
 
-triples_list = loader.entity2entity_triples(return_format='list',
-	output_dir='/home/amohamed/Collective_Classification/data/new_twitter/final_data')
-print(triples_list[:10])
+
 
 
 #e2l_triples = loader.entity2literal_triples(return_format='list',
