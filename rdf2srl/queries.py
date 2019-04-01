@@ -18,10 +18,10 @@ class SparqlQuery(object):
 
 class NTriples(SparqlQuery):
 	"""
-	A class for the sparql query that returns the number of triples
+	A class for the sparql query that returns the number of triples in the dataset
 	"""
 	def __str__(self):
-		return 'SELECT count(DISTINCT*)' + self.graph + 'WHERE { ?s ?p ?o}'
+		return 'SELECT count(DISTINCT *)' + self.graph + 'WHERE { ?s ?p ?o}'
 
 
 class NE2ETriples(SparqlQuery):

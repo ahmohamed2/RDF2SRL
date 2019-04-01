@@ -19,7 +19,7 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		super(SmartRDFGraphDataset, self).__init__(sparql_endpoint, graph_name)
 
 	def entity2entity_triples(self, return_format='list',
-		entity2idx=None, relation2idx=None, return_dict = False, output_dir=None):
+								entity2idx=None, relation2idx=None, return_dict=False, output_dir=None):
 		"""
 		A function that returns all the entity2entity triples in the specified graph as indices rather than URIs
 		:param entity2idx: a dictionary mapping each entity in the graph to an index from 0 to n_entities-1
@@ -33,12 +33,16 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 				entity2idx = self.entities('dict')
 			else:
 				entity2idx = self.entity2idx
+		print("created the entity2idx dictionary of length {}".format(len(entity2idx)))
+
 		# find the dictionary mapping each relation to its index
 		if relation2idx is None:
 			if self.relation2idx is None:
 				relation2idx = self.relations('dict')
 			else:
 				relation2idx = self.relation2idx
+		print("relation2index")
+		print(relation2idx)
 
 		query_string = str(E2ETriples(self.graph))
 		results_df = self.client.execute_query(query_string)

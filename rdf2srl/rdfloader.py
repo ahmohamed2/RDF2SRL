@@ -39,9 +39,7 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of entities
 		"""
 		query_string = str(NEntities(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
-		n_classes = self.client.execute_query(str(NClasses(self.graph)), limit=1).values.tolist()[0][0]
-		result = result.values.tolist()[0][0] + n_classes
+		result = self.client.execute_query(query_string, limit=1).values.tolist()[0][0]
 		return result
 
 	def num_predicates(self):
@@ -85,8 +83,7 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of triples
 		"""
 		query_string = str(NTriples(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
-		result = result.values.tolist()[0][0]
+		result = self.client.execute_query(query_string, limit=1).values.tolist()[0][0]
 		return result
 
 	def num_entity2entity_triples(self):
@@ -121,22 +118,22 @@ class RDFGraphDataset(object):
 		"""
 		query_string = str(Entities(self.graph))
 		result_df = self.client.execute_query(query_string)
-		classes_query_string = str(Classes(self.graph))
-		classes_df = self.client.execute_query(classes_query_string)
+		#classes_query_string = str(Classes(self.graph))
+		#classes_df = self.client.execute_query(classes_query_string)
 		# set the column name to "entity"
 		result_df.columns = ['entity']
-		classes_df.columns = ['entity']
+		#classes_df.columns = ['entity']
 		# create a new column for the index
 		result_df.reset_index(level=0, inplace=True)
-		classes_df.reset_index(level=0, inplace=True)
+		#classes_df.reset_index(level=0, inplace=True)
 		# merge the two classes
-		result_df = pd.merge(result_df, classes_df, how='outer')
-		#print("Does the returned dataframe from entities contain null data?", result_df.isnull().values.any())
+		#result_df = pd.merge(result_df, classes_df, how='outer')
+		print("Does the returned dataframe from entities contain null data?", result_df.isnull().values.any())
 		entity2idx = Series(result_df['index'].values, index=result_df['entity'].values).to_dict()
+		print("Does the returned dataframe after mapping contain null data?", result_df.isnull().values.any())
 		self.entity2idx = entity2idx
 
 		if return_format == 'dict':
-			#return defaultdict(lambda: 'missing', entity2idx)
 			return entity2idx
 		elif return_format == 'df':
 			return result_df
@@ -164,7 +161,7 @@ class RDFGraphDataset(object):
 		elif return_format == 'df':
 			return result_df
 		elif return_format == 'list':
-			return result_df['predicate'].values	
+			return list(itertools.chain(*result_df.values))
 
 	def relations(self, return_format='dict'):
 		"""
@@ -393,7 +390,7 @@ class RDFGraphDataset(object):
 		elif return_format == 'df':
 			return result_df
 
-	def predicates_freq(self):
+	def predicates_freq(self, return_format='df'):
 		"""
 		A function that returns all the predicates and their frequency
 		"""
