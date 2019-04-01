@@ -29,7 +29,7 @@ class NE2ETriples(SparqlQuery):
 	A class for the sparql query that returns the number of triples
 	"""
 	def __str__(self):
-		return 'SELECT (COUNT(DISTINCT *) as num_e2e_triples) ' + self.graph + 'WHERE {?s ?p ?o . FILTER isIRI(?o)}'
+		return 'SELECT (COUNT(DISTINCT *) as ?num_e2e_triples) ' + self.graph + 'WHERE {?s ?p ?o . FILTER isIRI(?o)}'
 
 
 class NE2LTriples(SparqlQuery):
@@ -37,7 +37,7 @@ class NE2LTriples(SparqlQuery):
 	A class for the sparql query that returns the number of triples
 	"""
 	def __str__(self):
-		return 'SELECT (COUNT(DISTINCT *) as num_e2l_triples) ' + self.graph + 'WHERE {?s ?p ?o . FILTER isLiteral(?o)}'
+		return 'SELECT (COUNT(DISTINCT *) as ?num_e2l_triples) ' + self.graph + 'WHERE {?s ?p ?o . FILTER isLiteral(?o)}'
 
 
 class NRDFTTypeTriples(SparqlQuery):
@@ -45,7 +45,7 @@ class NRDFTTypeTriples(SparqlQuery):
 	A class for the sparql query that returns the number of (?s rdf:type ?c) triples
 	"""
 	def __str__(self):
-		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT (COUNT(DISTINCT *) as n)'\
+		return 'PREFIX  rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> SELECT (COUNT(DISTINCT *) as ?n)'\
 			+ 'WHERE { {SELECT DISTINCT ?s rdf:type ?o' + self.graph + 'WHERE {?s rdf:type ?o }}}'
 
 
@@ -54,7 +54,7 @@ class NEntities(SparqlQuery):
 	A class for the sparql query that returns the number of entities
 	"""
 	def __str__(self):
-		return 'SELECT (COUNT(DISTINCT ?s) as num_entities)' + self.graph +\
+		return 'SELECT (COUNT(DISTINCT ?s) as ?num_entities)' + self.graph +\
 			'WHERE {{?s ?p ?o} UNION {SELECT ?s WHERE {?a ?b ?s . FILTER isIRI(?s)}}}'
 
 
