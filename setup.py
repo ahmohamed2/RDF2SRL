@@ -13,7 +13,7 @@ setup(name="rdf2srl",
       long_description_content_type="text/markdown",
       url="https://github.com/aishahasmoh/RDF2SRL",
       author="Aisha Mohamed",
-      author_email="ahmohamed@qcri.qf.org",
+      author_email="ahmohamed@qf.org.qa",
       classifiers=[
             "Programming Language :: Python :: 3.5",
       ],

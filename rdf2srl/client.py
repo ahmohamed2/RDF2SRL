@@ -58,7 +58,7 @@ class Client(object):
         """
         print(query)
         client = SPARQLWrapper(self.endpoint)
-        client.setTimeout(_TIMEOUT)
+        #client.setTimeout(_TIMEOUT)
         offset = 0
         results_string = ""  # where all the results are concatenated
         continue_streaming = True
