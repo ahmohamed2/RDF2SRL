@@ -6,6 +6,7 @@ from pandas import Series
 
 from .queries import *
 from .client import Client
+from .http_client import HttpClient
 
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
@@ -27,7 +28,8 @@ class RDFGraphDataset(object):
 		super(RDFGraphDataset, self).__init__()
 		self.graph = graph_name
 		self.endpoint = sparql_endpoint
-		self.client = Client(self.endpoint)
+		#self.client = Client(self.endpoint)
+		self.client = HttpClient(self.endpoint)
 		self.entity2idx = None
 		self.predicate2idx = None
 		self.relation2idx = None

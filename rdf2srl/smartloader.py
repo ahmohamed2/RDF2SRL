@@ -28,12 +28,22 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		:return: the triples in the graph in the specified format
 		"""
 		print("in entity2entity_triples")
+		query_string = str(E2ETriples(self.graph))
+		results_df = self.client.execute_query(query_string, output_file=output_dir+"/entity2entity_triples_uris.csv")
+		results_df.columns = ['subject', 'object', 'predicate']
+
+		print("Does the returned dataframe from entity2entity_triples for predicate contain null data? {}".format(
+			results_df.isnull().values.any()))
+		print("size of the dataframe = {}".format(results_df.shape))
 		if entity2idx is None:
 			if self.entity2idx is None:
 				entity2idx = self.entities('dict')
 			else:
 				entity2idx = self.entity2idx
 		print("created the entity2idx dictionary of length {}".format(len(entity2idx)))
+		if output_dir is not None:
+			with open(output_dir+"/entity2idx.json", 'w') as fp:
+				json.dump(entity2idx, fp)
 
 		# find the dictionary mapping each relation to its index
 		if relation2idx is None:
@@ -44,11 +54,9 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		print("relation2index")
 		print(relation2idx)
 
-		query_string = str(E2ETriples(self.graph))
-		results_df = self.client.execute_query(query_string)
-		results_df.columns = ['subject', 'object', 'predicate']
-		print("Does the returned dataframe from entity2entity_triples for predicate contain null data? {}".format(results_df.isnull().values.any()))
-		print("size of the dataframe = {}".format(results_df.shape))
+		if output_dir is not None:
+			with open(output_dir+"/relation2idx.json", 'w') as fp:
+				json.dump(relation2idx, fp)
 		results_df['subject'] = results_df['subject'].map(entity2idx)
 		results_df['object'] = results_df['object'].map(entity2idx)
 		results_df['predicate'] = results_df['predicate'].map(relation2idx)

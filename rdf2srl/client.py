@@ -1,12 +1,13 @@
 import sys
 import io
+import csv
 
 from SPARQLWrapper import SPARQLWrapper, CSV
 import pandas as pd
 
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
-_MAX_ROWS = 1000000 # maximum number of rows returned in the result set
+_MAX_ROWS = 100 # maximum number of rows returned in the result set
 _TIMEOUT = 90000 # in seconds
 
 
@@ -21,7 +22,7 @@ class Client(object):
         :param endpoint: string of the SPARQL endpoint's URI hostname:port
         :type endpoint: string
         """
-        self.endpoint = endpoint
+        self.endpoint_url = endpoint
 
     def is_alive(self, endpoint=None):
         """
@@ -37,16 +38,16 @@ class Client(object):
         """
         :return a string of the endpont URI
         """
-        return self.endpoint
+        return self.endpoint_url
 
     def set_endpoint(self, endpoint):
         """
         updates self.endpoint with the new endpoint
         :param endpoint: endpoint uri
         """
-        self.endpoint = endpoint
+        self.endpoint_url = endpoint
 
-    def execute_query(self, query, limit=_MAX_ROWS):
+    def execute_query(self, query, limit=_MAX_ROWS, output_file=None):
         """
         Connects to the sparql endpoint, sends the query and returns a dataframe containing the result of a sparql query
         :param query: a valid sparql query string
@@ -57,8 +58,7 @@ class Client(object):
         :return: a pandas dataframe representing the result of the query
         """
         print(query)
-        client = SPARQLWrapper(self.endpoint)
-        #client.setTimeout(_TIMEOUT)
+        client = SPARQLWrapper(self.endpoint_url)
         offset = 0
         results_string = ""  # where all the results are concatenated
         continue_streaming = True
@@ -71,7 +71,15 @@ class Client(object):
             client.setQuery(query_string)
             try:
                 client.setReturnFormat(CSV)
-                result = client.query().convert().decode("UTF-8").split("\n", 1)
+                result = client.query().convert().decode("UTF-8").split("\n", 1) # header and string
+                if output_file is not None:
+                    lines = list(csv.reader(result.split("\n"), delimiter=','))
+                    with open(output_file, 'a') as writeFile:
+                        writer = csv.writer(writeFile)
+                        if len(results_string) == 0:  # Add the returned table header
+                            writer.writerows(lines)
+                        else:
+                            writer.writerows(lines[1:])
                 if len(results_string) == 0:  # Add the returned table header
                     header = result[0]
                     results_string = header + "\n"

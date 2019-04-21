@@ -110,7 +110,8 @@ class E2ETriples(SparqlQuery):
 	A class for the sparql query that returns the number of triples
 	"""
 	def __str__(self):
-		return 'SELECT DISTINCT ?s ?o ?p' + self.graph + 'WHERE {?s ?p ?o . FILTER isIRI(?o) }'
+		return 'SELECT DISTINCT ?subject ?object ?predicate' + self.graph + \
+			'WHERE {?subject ?predicate ?object . FILTER isIRI(?object) }'
 
 
 class RDFTTypeTriples(SparqlQuery):
