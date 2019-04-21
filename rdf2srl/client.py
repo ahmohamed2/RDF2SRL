@@ -7,7 +7,7 @@ import pandas as pd
 
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
-_MAX_ROWS = 100 # maximum number of rows returned in the result set
+_MAX_ROWS = 1000000 # maximum number of rows returned in the result set
 _TIMEOUT = 90000 # in seconds
 
 

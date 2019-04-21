@@ -18,7 +18,7 @@ class HttpClientDataFormat:
     TURTLE = "TURTLE"
     HTML = "HTML"
     PANDAS_DF = "PANDAS_DF"
-    DEFAULT = CSV
+    DEFAULT = PANDAS_DF
 
     @staticmethod
     def return_format(comm_format):
@@ -43,7 +43,7 @@ class HttpClient(Client):
                  endpoint_url,
                  port=8890,
                  return_format=HttpClientDataFormat.DEFAULT,
-                 timeout=120,
+                 timeout=12000,
                  default_graph_uri='',
                  max_rows=10000):
         """
@@ -133,7 +133,7 @@ class HttpClient(Client):
         """
         self.return_format = return_format if return_format is not None else self.return_format
         final_result = None
-        for res in self._execute_query(query, return_format=return_format, export_file=output_file):
+        for res in self._execute_query(query, return_format=return_format, export_file=output_file, limit=limit):
             #print('data with type {} and length {} retrieved'.format(type(res).__name__, len(res)))
             if return_format == HttpClientDataFormat.PANDAS_DF:
                 if final_result is None:
@@ -149,7 +149,7 @@ class HttpClient(Client):
                 raise Exception("return format {} is unimplemented".format(return_format))
         return final_result
 
-    def _execute_query(self, query, return_format=None, export_file=None):
+    def _execute_query(self, query, return_format=None, export_file=None, limit=_MAX_ROWS):
         self.return_format = return_format if return_format is not None else self.return_format
 
         limit_start, limit_end = HttpClient.__find_clause(query, 'LIMIT')
@@ -200,14 +200,16 @@ class HttpClient(Client):
             offset_index += 1
             modified_query = HttpClient.__remove_clause(modified_query, 'LIMIT')
             modified_query = HttpClient.__remove_clause(modified_query, 'OFFSET')
-            modified_query = HttpClient.__append_clause(modified_query, 'OFFSET', current_offset)
-            modified_query = HttpClient.__append_clause(modified_query, 'LIMIT', self.max_rows)
+            if limit > 1:
+                modified_query = HttpClient.__append_clause(modified_query, 'OFFSET', current_offset)
+                modified_query = HttpClient.__append_clause(modified_query, 'LIMIT', self.max_rows)
             params = {
                 'query': modified_query,
                 'format': HttpClientDataFormat.return_format(self.return_format),
                 'default-graph-uri': self.default_graph_uri,
                 'maxrows': self.max_rows
             }
+            print(modified_query)
             response = requests.post(self.full_endpoint_url, data=params, timeout=self.timeout)
 
             if response.status_code == 200:
@@ -215,6 +217,8 @@ class HttpClient(Client):
 
                 if data is not None:
                     yield data
+                    if limit <= 1:
+                        break
                 else:
                     break
             else:

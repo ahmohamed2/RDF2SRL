@@ -6,7 +6,7 @@ from pandas import Series
 
 from .queries import *
 from .client import Client
-from .http_client import HttpClient
+from .http_client import HttpClient, HttpClientDataFormat
 
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
@@ -41,7 +41,8 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of entities
 		"""
 		query_string = str(NEntities(self.graph))
-		result = self.client.execute_query(query_string, limit=1).values.tolist()[0][0]
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF)
+		result = result.values.tolist()[0][0]
 		return result
 
 	def num_predicates(self):
@@ -49,7 +50,7 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of relations
 		"""
 		query_string = str(NPredicates(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF)
 		result = result.values.tolist()[0][0]
 		return result
 
@@ -58,7 +59,7 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of relations
 		"""
 		query_string = str(NRelations(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF)
 		result = result.values.tolist()[0][0]
 		return result
 
@@ -67,7 +68,7 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of attributes
 		"""
 		query_string = str(NAttributes(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF)
 		result = result.values.tolist()[0][0]
 		return result
 
@@ -76,7 +77,7 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of attribute literal pairs
 		"""
 		query_string = str(NAttributeLiteralPairs(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF)
 		result = result.values.tolist()[0][0]
 		return result
 
@@ -85,7 +86,7 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of triples
 		"""
 		query_string = str(NTriples(self.graph))
-		result = self.client.execute_query(query_string, limit=1).values.tolist()[0][0]
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF).values.tolist()[0][0]
 		return result
 
 	def num_entity2entity_triples(self):
@@ -93,7 +94,7 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of entity to entity triples
 		"""
 		query_string = str(NE2ETriples(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF)
 		result = result.values.tolist()[0][0]
 		return result
 
@@ -102,13 +103,13 @@ class RDFGraphDataset(object):
 		:return: integer representing the number of entity to literal triples
 		"""
 		query_string = str(NE2LTriples(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF)
 		result = result.values.tolist()[0][0]
 		return result
 
 	def num_rdf_type_triples(self):
 		query_string = str(NRDFTTypeTriples(self.graph))
-		result = self.client.execute_query(query_string, limit=1)
+		result = self.client.execute_query(query_string, limit=1, return_format=HttpClientDataFormat.PANDAS_DF)
 		result = result.values.tolist()[0][0]
 		return result
 

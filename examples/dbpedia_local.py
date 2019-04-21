@@ -5,8 +5,8 @@ from rdf2srl.smartloader import SmartRDFGraphDataset
 
 loader = SmartRDFGraphDataset(sparql_endpoint='http://10.161.202.101:8890/sparql/',
 	graph_name='http://dbpedia.org')
-#n_e = loader.num_entities()  #
-#print("n_e = {}".format(n_e))
+n_e = loader.num_entities()  #
+print("n_e = {}".format(n_e))
 #m = loader.num_triples()  #
 #print("num_triples = {}".format(m))
 #ne_e2e = loader.num_entity2entity_triples()
@@ -20,9 +20,9 @@ loader = SmartRDFGraphDataset(sparql_endpoint='http://10.161.202.101:8890/sparql
 #n_al = loader.num_attr_literal_pairs()  #
 #print("num_Attribute_literal)pairs = {}".format(n_al))
 
-triples_df = loader.entity2entity_triples(return_format='df', output_dir=None)
-print(triples_df.head(10))
-print("size of entity to entity triples = {}".format(triples_df.shape))
+#triples_df = loader.entity2entity_triples(return_format='df', output_dir=None)
+#print(triples_df.head(10))
+#print("size of entity to entity triples = {}".format(triples_df.shape))
 
 predicates_freq_df = loader.predicates_freq()
 print(predicates_freq_df)
