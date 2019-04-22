@@ -45,7 +45,7 @@ class HttpClient(Client):
                  return_format=HttpClientDataFormat.DEFAULT,
                  timeout=12000,
                  default_graph_uri='',
-                 max_rows=10000):
+                 max_rows=_MAX_ROWS):
         """
         Initializes a client object with the URI of the RDF engine SPARQL endpoint and the port number
         :param endpoint_url: the url of the RDF engine or SPARQL endpoint
@@ -122,7 +122,7 @@ class HttpClient(Client):
         if max_rows >= 1:
             self.max_rows = max_rows
 
-    def execute_query(self, query, limit=_MAX_ROWS, return_format=HttpClientDataFormat.CSV, output_file=None):
+    def execute_query(self, query, limit=_MAX_ROWS, offset=0, return_format=HttpClientDataFormat.CSV, output_file=None):
         """
         submits the provided SPARQL query to the registered endpoint to be executed.
         The result is retrieved in the requested format (return_format)
@@ -133,20 +133,23 @@ class HttpClient(Client):
         """
         self.return_format = return_format if return_format is not None else self.return_format
         final_result = None
+        query = self.__append_clause(query, "OFFSET", offset)
+        print("QUERY IS {}".format(query))
         for res in self._execute_query(query, return_format=return_format, export_file=output_file, limit=limit):
             #print('data with type {} and length {} retrieved'.format(type(res).__name__, len(res)))
-            if return_format == HttpClientDataFormat.PANDAS_DF:
-                if final_result is None:
-                    final_result = res
+            if output_file is None:
+                if return_format == HttpClientDataFormat.PANDAS_DF:
+                    if final_result is None:
+                        final_result = res
+                    else:
+                        final_result = pd.merge(final_result, res, how='outer')
+                elif return_format == HttpClientDataFormat.CSV:
+                    if final_result is None:
+                        final_result = res
+                    else:
+                        final_result += res
                 else:
-                    final_result = pd.merge(final_result, res, how='outer')
-            elif return_format == HttpClientDataFormat.CSV:
-                if final_result is None:
-                    final_result = res
-                else:
-                    final_result += res
-            else:
-                raise Exception("return format {} is unimplemented".format(return_format))
+                    raise Exception("return format {} is unimplemented".format(return_format))
         return final_result
 
     def _execute_query(self, query, return_format=None, export_file=None, limit=_MAX_ROWS):
@@ -169,20 +172,21 @@ class HttpClient(Client):
         if offset_start != -1:
             try:
                 query_offset = int(query[offset_start: offset_end])
+                print("query offset", query_offset)
             except ValueError:
                 pass
 
         offsets = None
 
-        if limit_start != -1:
+        if limit_start != -1:  # There is a limit cluase in the original query
             offsets = []
 
-            if offset_start != -1:
+            if offset_start != -1:  # There is an offset clause in the original query, add it to the list of offsets
                 offsets.append(query_offset)
             else:
                 offsets.append(0)
 
-            if query_limit > self.max_rows:
+            if query_limit > self.max_rows: # if the query limit is less than max rows, create a list of offsets
                 query_limit -= self.max_rows
                 current_offset = offsets[0]
 
@@ -190,9 +194,14 @@ class HttpClient(Client):
                     current_offset += self.max_rows
                     query_limit -= self.max_rows
                     offsets.append(current_offset)
+        else:  # if there is no limit clause in the original query
+            if offset_start != -1:  # There is an offset clause in the original query, add it to the list of offsets
+                current_offset = -1 * self.max_rows + query_offset
+            else:
+                current_offset = -1 * self.max_rows
 
         offset_index = 0
-        current_offset = -1 * self.max_rows
+        #current_offset = -1 * self.max_rows
 
         while offsets is None or offset_index < len(offsets):
             modified_query = query

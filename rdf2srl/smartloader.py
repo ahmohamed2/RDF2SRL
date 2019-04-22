@@ -29,7 +29,7 @@ class SmartRDFGraphDataset(RDFGraphDataset):
 		"""
 		print("in entity2entity_triples")
 		query_string = str(E2ETriples(self.graph))
-		results_df = self.client.execute_query(query_string, output_file=output_dir+"/entity2entity_triples_uris.csv")
+		results_df = self.client.execute_query(query_string, offset=23200000, output_file=output_dir+"/entity2entity_triples_uris.csv")
 		results_df.columns = ['subject', 'object', 'predicate']
 
 		print("Does the returned dataframe from entity2entity_triples for predicate contain null data? {}".format(

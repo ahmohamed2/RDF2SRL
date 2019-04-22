@@ -7,7 +7,7 @@ import pandas as pd
 
 __author__ = "Aisha Mohamed <ahmohamed@qf.org.qa>"
 
-_MAX_ROWS = 1000000 # maximum number of rows returned in the result set
+_MAX_ROWS = 100000 # maximum number of rows returned in the result set
 _TIMEOUT = 90000 # in seconds
 
 
@@ -47,7 +47,7 @@ class Client(object):
         """
         self.endpoint_url = endpoint
 
-    def execute_query(self, query, limit=_MAX_ROWS, output_file=None):
+    def execute_query(self, query, limit=_MAX_ROWS, offset=0, output_file=None):
         """
         Connects to the sparql endpoint, sends the query and returns a dataframe containing the result of a sparql query
         :param query: a valid sparql query string

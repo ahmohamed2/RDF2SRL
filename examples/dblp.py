@@ -5,21 +5,21 @@ from rdf2srl.smartloader import SmartRDFGraphDataset
 
 if __name__ == "__main__":
     loader = SmartRDFGraphDataset(sparql_endpoint="http://10.161.202.101:8890/sparql/", graph_name='http://dblp.l3s.de/')
-    n_e = loader.num_entities()  # on isql: 28,058,722, here it is 28,058,736
-    print("n_e = {}".format(n_e))
+    #n_e = loader.num_entities()  # on isql: 28,058,722, here it is 28,058,736
+    #print("n_e = {}".format(n_e))
     #m = loader.num_triples()  # on isql 86,328,967
     #print("num_triples = {}".format(m))
-    n_p = loader.num_predicates()  # 27
-    print("num_predicates = {}".format(n_p))
-    n_r = loader.num_relations()  # 15
-    print("num_relations = {}".format(n_r))
+    #n_p = loader.num_predicates()  # 27
+    #print("num_predicates = {}".format(n_p))
+    #n_r = loader.num_relations()  # 15
+    #print("num_relations = {}".format(n_r))
     #n_a = loader.num_attributes()  # 12
     #print("num_attributes = {}".format(n_a))
     #n_al = loader.num_attr_literal_pairs()  # 16,776,396
     #print("num_Attribute_literal)pairs = {}".format(n_al))
 
     # entity2idx is 28,058,722 and
-    #triples_df = loader.entity2entity_triples(return_format='df', output_dir="./")
+    triples_df = loader.entity2entity_triples(return_format='df', output_dir="./")
     #print(triples_df.head(10))
     #print("size of entity to entity triples = {}".format(triples_df.shape))
 
